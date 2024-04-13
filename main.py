@@ -23,6 +23,7 @@ pygame.display.set_caption("DemonSUMMON")
 
 clock = pygame.time.Clock()
 mouse = pygame.mouse
+mixer = pygame.mixer_music
 running = True
 game_over = False
 
@@ -30,6 +31,7 @@ pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
+mixer.load("./assets/loadAndChamber.mp3")
 
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 
@@ -92,7 +94,8 @@ angelSpawnTimer = 3
 timePassedFromAngel = 0
 maxAngels = 10
 
-mangija = Mangija.Mangija(0,0,5)
+
+mangija = Mangija.Mangija(100,100,5)
 
 paused = False
 mainMenu = True
@@ -116,7 +119,7 @@ vignette_speed = 2  # Speed at which the vignette appears
 vignette_color = (0, 0, 0)  # Black color for vignette
 
 def init():
-    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
     mangija = Mangija.Mangija(0,0,5)
@@ -142,6 +145,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if startButton.isOver(mouse.get_pos()):
+                        mixer.play()
                         mainMenu = False
                         init()
                     elif exitButton.isOver(mouse.get_pos()):
@@ -160,17 +164,23 @@ while running:
                     elif exitButton.isOver(mouse.get_pos()):
                         paused = False
                         mainMenu = True
+                        mixer.load("./assets/loadAndChamber.mp3")
 
         pygame.display.flip()
         clock.tick(60)
         continue
 
+
+
     for event in events:
         if not game_over:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    mixer.load("./assets/pistolShot.mp3")
                     mangija.TekitaMuzzleFlash(5)
+                    mixer.play()
                     TegeleTulistamisega(mangija, zombies, angels)
+                    mangija.SaaTagasilööki(5,1)
                 elif event.button == 3:
                     paused = True
                 elif event.button == 2:
@@ -189,13 +199,14 @@ while running:
     keys = pygame.key.get_pressed()
     if not game_over:
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            mangija.asukx=clamp(mangija.asukx-mangija.kiirus, 0, 1280)
             mangija.asukx-= mangija.kiirus
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            mangija.asukx+=mangija.kiirus
+            mangija.asukx=clamp(mangija.asukx+mangija.kiirus, 0, 1280)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            mangija.asuky-=mangija.kiirus
+            mangija.asuky=clamp(mangija.asuky-mangija.kiirus, 0, 720)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            mangija.asuky+=mangija.kiirus
+            mangija.asuky=clamp(mangija.asuky+mangija.kiirus, 0, 720)
         if keys[pygame.K_f]:
             # Iterate over angels and stun those targeting the player
             for angel in angels:
