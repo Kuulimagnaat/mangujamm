@@ -15,7 +15,11 @@ def clamp(n, min, max):
 # pygame setup
 pygame.init()
 pygame.font.init()
+
+my_font = pygame.font.SysFont('Comic Sans MS', 30)
+
 screen = pygame.display.set_mode((1280, 720))
+
 
 clock = pygame.time.Clock()
 mouse = pygame.mouse
@@ -27,10 +31,10 @@ angles = []
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 
 summonProgress = 0
-summonSpeed = 2
+summonSpeed = 50
 timePassedFromSummon = 0
 
-pentaGramPoints = [(100, 100), (500,500), (300, 150), (400, 400), (621,199)]
+pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
 mangija = Mangija(0,0,5)
 
@@ -110,8 +114,9 @@ while running:
         progressBarProgressColor = (200,200,200)
         pygame.draw.rect(screen, progressBarBackgroundColor, progressBarBackground)
         pygame.draw.rect(screen, progressBarProgressColor, progressBarProgress)
+        text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
+        screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
-    
     #for angel in angles:
         #angel.update(screen)
 
