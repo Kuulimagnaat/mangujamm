@@ -2,6 +2,7 @@ import pygame
 import random
 from Mangija import Mangija
 from Funktsioonid import *
+from button import *
 
 def clamp(n, min, max): 
     if n < min: 
@@ -19,7 +20,6 @@ my_font = pygame.font.SysFont('Comic Sans MS', 30)
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("DemonSUMMON")
-
 
 clock = pygame.time.Clock()
 running = True
@@ -49,7 +49,6 @@ mangija = Mangija.Mangija(0,0,5)
 
 paused = False
 
-
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -62,9 +61,11 @@ while running:
     if paused:
         menuWidth, menuHeight = 400, 350
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
+        #continueButton = Button()
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print(event.button)
+                pass
+                
         pygame.display.flip()
         clock.tick(60)
         continue
