@@ -7,10 +7,12 @@ class Mangija:
         self.mangijaPilt = pygame.Surface((self.suurus[0], self.suurus[1]))
         self.muzzlefPilt = pygame.image.load("./assets/Muzzle flash.png")
         self.muzzlefRect = self.muzzlefPilt.get_rect()
+        self.tagasilöögiKiirus = [0,0]
+        self.tagasilöögiVähenemiseKiirendus = 3
         
         self.muzzleFlashCounter = 0
-        self.asukx = 50
-        self.asuky = 50
+        self.asukx = asukx
+        self.asuky = asuky
         self.kiirus = 5
         self.elud = 100
         self.suurus = [30,30]
@@ -59,6 +61,30 @@ class Mangija:
     
     # Funktsioon arvutab m�ngijale uue suuna ja liigutab seda
     def Varskenda(self):
+        v1 = self.tagasilöögiKiirus[0]
+        v2 = self.tagasilöögiKiirus[1]
+        k = self.tagasilöögiVähenemiseKiirendus
+
+        self.asukx += v1
+        self.asuky += v2
+        
+        if self.tagasilöögiKiirus != [0,0]:
+            # Vähendatud tagasilöögikiiruse leidmine:
+            # Tagasilöögikiiruse vektori pikkus V
+            V = (v1**2 + v2**2)**0.5
+            tegur = (V-k)/V
+            # uus tagaslöögikiirus:
+            u1 = v1*tegur
+            u2 = v2 * tegur
+            # Kui uus kiirus osutub suuremaks, kui vana, ss lõpeta.
+            U = (u1**2 + u2**2)**0.5
+            if V < U:
+                self.tagasilöögiKiirus = [0,0]
+            else:
+                self.tagasilöögiKiirus = [u1, u2]
+            
+            
+
         P = [self.asukx, self.asuky]
         H = pygame.mouse.get_pos()
         s = [H[0]-P[0], H[1]-P[1]]
@@ -104,4 +130,8 @@ class Mangija:
     
     def SaaViga(self, kahju):
         self.elud -= kahju
+        
+    def SaaTagasilööki(self, kiirus, kiirendus):
+        self.tagasilöögiVähenemiseKiirendus = kiirendus
+        self.tagasilöögiKiirus = [-kiirus*self.suund[0],-kiirus*self.suund[1]]
             

@@ -45,7 +45,7 @@ timePassedFromAngel = 0
 maxAngels = 10
 
 
-mangija = Mangija.Mangija(0,0,5)
+mangija = Mangija.Mangija(100,100,5)
 
 while running:
     # poll for events
@@ -57,6 +57,7 @@ while running:
             print("Tulistati!")
             mangija.TekitaMuzzleFlash(5)
             TegeleTulistamisega(mangija, zombies, angels)
+            mangija.SaaTagasilööki(30,2.5)
             
     
     keys = pygame.key.get_pressed()
