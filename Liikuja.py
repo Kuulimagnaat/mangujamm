@@ -6,7 +6,7 @@ class Mangija:
         self.elud = 100
         self.suund = [100,0]
         
-    def VaataAsuk(self):
+    def VotaAsuk(self):
         return self.asukx, self.asuky
     
     def Tulista(self, tegelasteNimek):

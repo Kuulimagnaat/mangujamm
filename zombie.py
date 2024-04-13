@@ -1,4 +1,5 @@
 import pygame
+from numpy import linalg, cross
 
 class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y, target=(0,0)):
@@ -12,6 +13,8 @@ class Zombie(pygame.sprite.Sprite):
         self.target = target
         self.kiirus = 10
         self.walking = True
+        self.pihtaSaamisRaadius = 50
+        
 
 
     def getPos(self):
@@ -35,3 +38,24 @@ class Zombie(pygame.sprite.Sprite):
                 speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                 self.setPos(self.x+speedVector[0], self.y+speedVector[1])
         self.draw(surface)
+                
+
+    def KasSaabPihta(self, asuk, suund):
+        # Vaja on lisada kontroll, et kas zombi on ikka sirgele l�hedal seal suunas, kuju m�ngija osutab, mitte tema selja taga.
+        vahevek = [self.x - asuk[0], self.y - asuk[1]]
+        sihivek = suund
+        vekkorr = cross(vahevek, sihivek)
+        vekkorrp = linalg.norm(vekkorr, ord = 2)
+        sihivekp = linalg.norm(sihivek, ord = 2)
+        vastus = vekkorrp / sihivekp
+        if vastus < self.pihtaSaamisRaadius:
+            return True
+        else:
+            return False
+        
+
+        
+    def KasKuulKattub(self, kuul):
+        pass    
+        
+        
