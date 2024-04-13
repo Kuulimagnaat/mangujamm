@@ -60,6 +60,8 @@ game_over_quotes = [
     "In the depths of despair, find solace in the void."
 ]
 
+backToMainMenuButton = Button((1280-300)/2, 400, 300, 100, "Back to Main Menu", bgcolor=(15,15,15), textcolor=(255,255,255))
+
 # Function to draw Game Over text on the screen
 def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     game_over_text = game_over_font.render(chosen_quote, True, (255, 0, 0))
@@ -80,6 +82,7 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     
     screen.blit(shadow_text, shadow_rect)
     screen.blit(stats_rendered, stats_rect)
+
 
 summonProgress = 0
 summonSpeed = 2
@@ -119,11 +122,13 @@ vignette_speed = 2  # Speed at which the vignette appears
 vignette_color = (0, 0, 0)  # Black color for vignette
 
 def init():
-    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
     mangija = Mangija.Mangija(0,0,5)
     timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
+    game_over=False
+    vignette_alpha
 
 while running:
     # poll for events
@@ -304,6 +309,16 @@ while running:
         # Blit the vignette image onto the screen
         screen.blit(vignette_image, (0, 0))  # Adjust position if needed
         draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
+
+        backToMainMenuButton.draw(screen)
+        for event in events:
+            if event == pygame.MOUSEBUTTONDOWN:
+                print("Hi")
+                if event.button == 1 and backToMainMenuButton.isOver(event.pos):
+                    print("HI2")
+                    mainMenu = True
+                    game_over = False
+                    init()
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
@@ -314,7 +329,6 @@ while running:
         # Disable player controls
         keys = pygame.key.get_pressed()  # Clear the key state
 
-    # RENDER YOUR GAME HERE
 
     # flip() the display to put your work on screen
     pygame.display.flip()

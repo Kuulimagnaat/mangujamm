@@ -1,13 +1,14 @@
 import pygame
 
 class Button():
-    def __init__(self, x, y, width, height, text, color=(255,255,255)):
+    def __init__(self, x, y, width, height, text, bgcolor=(255,255,255), textcolor=(0,0,0)):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.text = text
-        self.color = color
+        self.bgcolor = bgcolor
+        self.textcolor = textcolor
 
     def isOver(self, pos):
         if pos[0] > self.x and pos[0] < self.x + self.width:
@@ -20,9 +21,9 @@ class Button():
         if outline:
             pygame.draw.rect(win, outline, (self.x-2, self.y-2, self.width+4, self.height+4), 0)
             
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height), 0)
+        pygame.draw.rect(win, self.bgcolor, (self.x, self.y, self.width, self.height), 0)
         
         if self.text != '':
             font = pygame.font.SysFont('comicsans', 32)
-            text = font.render(self.text, 1, (0, 0, 0))
+            text = font.render(self.text, 1, self.textcolor)
             win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
