@@ -114,6 +114,14 @@ while running:
                 print("zombies on screen: ", len(zombies))
                 print("zombies killed: ", mangija.zombieKills)
                 print("Damage done to angels: ", mangija.damageDone)
+            print("Tulistati!")
+            mangija.TekitaMuzzleFlash(5)
+            TegeleTulistamisega(mangija, zombies, angels)
+
+        # Check if the timer event is triggered
+        if event.type == pygame.USEREVENT + 3:
+            for angel in angels:
+                angel.Stunned = False
     
     keys = pygame.key.get_pressed()
 
@@ -125,6 +133,12 @@ while running:
         mangija.asuky-=mangija.kiirus
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
         mangija.asuky+=mangija.kiirus
+    if keys[pygame.K_f]:
+        # Iterate over angels and stun those targeting the player
+        for angel in angels:
+            if angel.target == mangija:
+                angel.Stunned = True
+                pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
 
     # fill the screen with a color to wipe away anything from last frame
 
