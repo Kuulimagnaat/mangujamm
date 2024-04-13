@@ -36,6 +36,9 @@ def TegeleTulistamisega(mangija:Mangija.Mangija, zombinimek:List[zombie.Zombie],
     
     elif (len(ipihtasaajad) != 0 and len(zpihtasaajad) == 0):
         ipihtasaajad[0].SaaViga(bulletDamage)
+        mangija.damageDone+=bulletDamage
+        if ipihtasaajad[0].hp <= 0:
+            mangija.angelKills += 1
         
     elif (len(ipihtasaajad) == 0 and len(zpihtasaajad) != 0):
         zpihtasaajad[0].SaaViga(bulletDamage)

@@ -14,7 +14,7 @@ class Angel(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.hp = 100
+        self.hp = 30
         self.target = target
         self.kiirus = 4
         self.slow_speed = 2
@@ -59,7 +59,7 @@ class Angel(pygame.sprite.Sprite):
         health_bar_y = self.y - self.height / 2 - 10
         
         # Calculate health bar width based on current health
-        health_width = (self.hp / 100) * self.health_bar_length
+        health_width = (self.hp / 30) * self.health_bar_length
         
         # Draw health bar background
         pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, self.health_bar_length, self.health_bar_height))
