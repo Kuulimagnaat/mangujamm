@@ -57,7 +57,7 @@ while running:
                 newTargets.remove(zombie2.target)
                 zombies[zombies.index(zombie2)].target = random.choice(newTargets)
                 print("test")
-        zombie.update(screen)
+        zombie.update(screen, mangija)
         if zombie.walking:
             allZombiesArrived=False
     if allZombiesArrived:
@@ -67,7 +67,6 @@ while running:
             summonProgress=clamp(summonProgress+summonSpeed, 0, 100)
             print(summonProgress)
             timePassedFromSummon=0
-
 
 
     # RENDER YOUR GAME HERE
