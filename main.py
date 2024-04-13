@@ -10,7 +10,7 @@ running = True
 
 zombies = []
 
-pentaGramPoints = [(100, 100), (500,500)]
+pentaGramPoints = [(100, 100), (500,500), (300, 150)]
 
 while running:
     # poll for events
@@ -26,11 +26,13 @@ while running:
         x=random.randrange(0, 1280)
         y=random.randrange(0,720)
         zombie = Zombie(x, y, pentaGramPoints[0])
-        print(zombie.x, zombie.y)
         for point in pentaGramPoints:
-            if ((point[0]-x)**2+(point[1]-y)**2) < (zombie.target[0]-x)**2+(zombie.target[1]-y)**2:
+            if ((point[0]-zombie.getPosX())**2+(point[1]-zombie.getPosY())**2) < (zombie.target[0]-zombie.getPosX())**2+(zombie.target[1]-zombie.getPosY())**2:
                 zombie.target=point
         zombies.append(zombie)
+
+    for point in pentaGramPoints:
+        pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
 
     for zombie in zombies:
         zombie.update(screen)
