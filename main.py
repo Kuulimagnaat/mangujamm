@@ -125,7 +125,7 @@ while running:
             timePassedFromSummon=0
     
     for angel in angels:
-        angel.update(screen)
+        angel.update(screen, zombies)
 
     # Progress bar
     if summonProgress>=0:
