@@ -19,6 +19,9 @@ class Zombie(pygame.sprite.Sprite):
         self.pihtaSaamisRaadius = 30
         self.onSurnud = False
         
+        # Dot parameters
+        self.dot_radius = 2
+        self.dot_color = (0, 255, 0)  # Green color for the dot
 
     def getPos(self):
         return (self.x, self.y)
@@ -39,6 +42,10 @@ class Zombie(pygame.sprite.Sprite):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
         pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
     
+    def draw_dot(self, surface):
+        # Draw dot at the zombie's position
+        pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)
+
     # Siia funktiooni on vaja lisada, mis juhtub, kui zombil on elusid vähem kui 0.
     def update(self, surface, mangija=Mangija):
         if self.walking:
@@ -58,6 +65,7 @@ class Zombie(pygame.sprite.Sprite):
             self.image.fill(self.algvärv)
             
         self.draw(surface)
+        self.draw_dot(surface)
         if (self.hp <= 0):
             self.onSurnud = True
 

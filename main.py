@@ -71,7 +71,10 @@ while running:
 
 
     if len(zombies) != 6:
-        zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
+        x = random.randrange(0, 1280)
+        y = random.randrange(0,720)
+        zombies.append(Zombie(x, y, random.choice(pentaGramPoints)))
+
     if len(angels) == 0:
         angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
 
