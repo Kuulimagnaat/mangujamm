@@ -23,12 +23,14 @@ pygame.display.set_caption("DemonSUMMON")
 
 clock = pygame.time.Clock()
 mouse = pygame.mouse
+mixer = pygame.mixer_music
 running = True
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
+mixer.load("./assets/loadAndChamber.mp3")
 
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 
@@ -61,7 +63,7 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
 
 def init():
-    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
     mangija = Mangija.Mangija(0,0,5)
@@ -87,6 +89,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if startButton.isOver(mouse.get_pos()):
+                        mixer.play()
                         mainMenu = False
                         init()
                     elif exitButton.isOver(mouse.get_pos()):
@@ -105,15 +108,20 @@ while running:
                     elif exitButton.isOver(mouse.get_pos()):
                         paused = False
                         mainMenu = True
+                        mixer.load("./assets/loadAndChamber.mp3")
 
         pygame.display.flip()
         clock.tick(60)
         continue
 
+
+
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                mixer.load("./assets/pistolShot.mp3")
                 mangija.TekitaMuzzleFlash(5)
+                mixer.play()
                 TegeleTulistamisega(mangija, zombies, angels)
                 mangija.SaaTagasilööki(5,1)
             elif event.button == 3:
