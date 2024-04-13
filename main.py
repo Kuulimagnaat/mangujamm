@@ -28,14 +28,15 @@ running = True
 game_over = False
 game_won = False
 
-pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
+pentaGramPoints = [(650, 150), (350, 300), (950, 300), (492, 620), (800, 620)]
 
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
 mixer.load("./assets/loadAndChamber.mp3")
 
-pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
-backgroundImage = pygame.image.load("./assets/background.png")
+#pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
+backgroundImage = pygame.image.load("./assets/background.png").convert()
+candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -213,8 +214,6 @@ while running:
                     mixer.play()
                     TegeleTulistamisega(mangija, zombies, angels)
                     mangija.SaaTagasilööki(5,1)
-                elif event.button == 3:
-                    paused = True
                 elif event.button == 2:
                     print("angels on screen: ", len(angels))
                     print("angels killed: ", mangija.angelKills)
@@ -222,7 +221,8 @@ while running:
                     print("zombies killed: ", mangija.zombieKills)
                     print("Damage done to angels: ", mangija.damageDone)
                 #print("Tulistati!")
-
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                paused=True
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
             for angel in angels:
@@ -255,9 +255,10 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
 
     #Pentagram
-    screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
+    #screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
     for point in pentaGramPoints:
-        pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
+        #pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
+        screen.blit(candleImage, (point[0]-50, point[1]-50))
 
     if len(zombies)<=maxZombies:
         if timePassedFromZombie == 0:
@@ -345,6 +346,7 @@ while running:
                     mainMenu = True
                     game_over = False
                     game_won = False
+                    summonProgress=0
                     init()
 
     # Draw vignette image if game is over
