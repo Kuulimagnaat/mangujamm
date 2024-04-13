@@ -70,7 +70,7 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(game_over_text, text_rect)
 
-    stats_text = f"Friends Killed: {currentZomb} | Angels Killed: {mangija.angelKills}"
+    stats_text = f"Friends Killed: {currentZomb} | Angels Killed: {mangija.angelKills} | Damage Done: {mangija.damageDone}"
     shadow_text = stats_font.render(stats_text, True, (0,0,0))
     stats_rendered = stats_font.render(stats_text, True, (255, 0, 0))
 
