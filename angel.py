@@ -58,7 +58,7 @@ class Angel(pygame.sprite.Sprite):
         health_bar_y = self.y - self.height / 2 - 10
         
         # Calculate health bar width based on current health
-        health_width = (self.hp / 100) * self.health_bar_length
+        health_width = (self.hp / 30) * self.health_bar_length
         
         # Draw health bar background
         pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, self.health_bar_length, self.health_bar_height))

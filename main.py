@@ -48,11 +48,17 @@ maxAngels = 10
 
 mangija = Mangija.Mangija(0,0,5)
 
-paused = True
+paused = False
+mainMenu = True
 
 menuWidth, menuHeight = 400, 350
+
+# Pause menu
 continueButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Continue")
 exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100, "Exit")
+
+#Main menu
+startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
 
 while running:
     # poll for events
@@ -63,19 +69,34 @@ while running:
             running = False
     
     screen.fill("purple")
-    if paused:
+
+    if mainMenu or paused:
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
-        continueButton.draw(screen)
         exitButton.draw(screen)
+
+    if mainMenu:
+        startButton.draw(screen)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if startButton.isOver(mouse.get_pos()):
+                        mainMenu = False
+                    elif exitButton.isOver(mouse.get_pos()):
+                        running= False
+        pygame.display.flip()
+        clock.tick(60)
+        continue
+    
+    if paused:
+        continueButton.draw(screen)
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if continueButton.isOver(mouse.get_pos()):
                         paused = False
                     elif exitButton.isOver(mouse.get_pos()):
-                        running= False
+                        running= mainMenu
 
-                
         pygame.display.flip()
         clock.tick(60)
         continue
@@ -83,14 +104,16 @@ while running:
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                print("Tulistati!")
                 mangija.TekitaMuzzleFlash(5)
                 TegeleTulistamisega(mangija, zombies, angels)
             elif event.button == 3:
                 paused = True
             elif event.button == 2:
-                print("angels: ", len(angels))
-                print("kills: ", mangija.angelKills)
+                print("angels on screen: ", len(angels))
+                print("angels killed: ", mangija.angelKills)
+                print("zombies on screen: ", len(zombies))
+                print("zombies killed: ", mangija.zombieKills)
+                print("Damage done to angels: ", mangija.damageDone)
     
     keys = pygame.key.get_pressed()
 
@@ -182,5 +205,6 @@ while running:
     pygame.display.flip()
 
     clock.tick(60)  # limits FPS to 60
+
 
 pygame.quit()

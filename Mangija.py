@@ -98,7 +98,6 @@ class Mangija:
         det = x1*y2 - y1*x2      # determinant
         angle = numpy.arctan2(det, dot)
         nurk = numpy.rad2deg(angle)
-        print(nurk)
         return nurk-90
         
         
