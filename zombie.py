@@ -74,7 +74,7 @@ class Zombie(pygame.sprite.Sprite):
         
 
         # Seiab nurga P2 ja Z vahel. Kui see on < 0, siis on mängija seljaga zombi poole.
-        koosinus = (S[0]*Z[0]+S[1]*Z[1])/  ((S[0]**2 + S[1]**2)**0.5 * (Z[0]**2 + Z[1]**2)**0.5)
+        koosinus = (S[0]*Z[0]+S[1]*Z[1])/((S[0]**2 + S[1]**2)**0.5 * (Z[0]**2 + Z[1]**2)**0.5)
         #print(koosinus)
         
         try:
