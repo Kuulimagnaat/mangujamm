@@ -3,6 +3,7 @@ import random
 from Mangija import Mangija
 import Funktsioonid
 from zombie import *
+from angel import *
 from angel import Angel
 
 def clamp(n, min, max): 
@@ -38,6 +39,7 @@ timePassedFromSummon = 0
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
 mangija = Mangija(0,0,5)
+angelMade = False
 
 while running:
     # poll for events
@@ -73,6 +75,11 @@ while running:
     #if len(angles) == 0:
         #angles.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
         
+    if angelMade == False:
+        angelMade = True
+        x=random.randrange(0, 1280)
+        y=random.randrange(0,720)
+        testAngel = Angel(x, y, zombies[0])
 
     mangija.Varskenda()
     mangija.Joonista(screen)
