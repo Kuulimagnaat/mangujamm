@@ -40,8 +40,8 @@ class Angel(pygame.sprite.Sprite):
             pygame.image.load("./assets/sword_slash_5.png")
         ]
         self.current_slash_index = 0
-        self.frame_delay = 3
-        self.slash_duration = 5  # Duration (in frames) for each slash image
+        self.frame_delay = 5
+        self.slash_duration = 8  # Duration (in frames) for each slash image
         self.slash_timer = 0
 
         # Dot parameters
