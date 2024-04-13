@@ -7,8 +7,9 @@ class Mangija:
         self.kiirus = 5
         self.elud = 100
         self.suurus = [30,30]
-        # Suund olgu alati ühikvektor
+        # Suund olgu alati ï¿½hikvektor
         self.suund = [1.0,0.0]
+        self.damage = 10
         
     def VotaAsuk(self):
         return self.asukx, self.asuky
@@ -20,7 +21,7 @@ class Mangija:
         for i in tegelasteNimek:
             i.KasSaabPihta((self.asukx, self.asuky), self.suund)
     
-    # Funktsioon arvutab mängijale uue suuna ja liigutab seda
+    # Funktsioon arvutab mï¿½ngijale uue suuna ja liigutab seda
     def Varskenda(self):
         P = [self.asukx, self.asuky]
         H = pygame.mouse.get_pos()

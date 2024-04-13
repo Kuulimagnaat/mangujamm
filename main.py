@@ -1,7 +1,7 @@
 import pygame
 import random
 from Mangija import Mangija
-import Funktsioonid
+from Funktsioonid import *
 from zombie import *
 from angel import *
 from angel import Angel
@@ -27,19 +27,28 @@ clock = pygame.time.Clock()
 mouse = pygame.mouse
 running = True
 
-zombies = []
+pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
+
+zombies = [spawnZombie(pentaGramPoints)]
 angels = []
 
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 
 summonProgress = 0
-summonSpeed = 50
+summonSpeed = 2
+summonReductionSpeed = 1
 timePassedFromSummon = 0
 
-pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
+zombieSpawnTimer = 5
+timePassedFromZombie = 0
+maxZombies = 6
+
+angelSpawnTimer = 3
+timePassedFromAngel = 0
+maxAngels = 10
+
 
 mangija = Mangija(0,0,5)
-angelMade = False
 
 while running:
     # poll for events
@@ -49,7 +58,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("Tulistati!")
-            Funktsioonid.TegeleTulistamisega(mangija, zombies, angels)
+            TegeleTulistamisega(mangija, zombies, angels)
             
     
     keys = pygame.key.get_pressed()
@@ -68,21 +77,24 @@ while running:
 
     #Pentagram
     screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
+    for point in pentaGramPoints:
+        pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
 
+    if timePassedFromZombie == 0 and len(zombies)<=maxZombies:
+        timePassedFromZombie = pygame.time.get_ticks()
+    elif pygame.time.get_ticks() >= timePassedFromZombie + zombieSpawnTimer*1000:
+        zombies.append(spawnZombie(pentaGramPoints))
+        timePassedFromZombie=0
 
-    if len(zombies) != 6:
-        x = random.randrange(0, 1280)
-        y = random.randrange(0,720)
-        zombies.append(Zombie(x, y, random.choice(pentaGramPoints)))
+    if timePassedFromAngel == 0 and len(angels)<=maxAngels:
+        timePassedFromAngel = pygame.time.get_ticks()
+    elif pygame.time.get_ticks() >= timePassedFromAngel + angelSpawnTimer*1000:
+        angels.append(spawnAngel(zombies))
+        timePassedFromAngel=0
 
-    if len(angels) == 0:
-        angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
 
     mangija.Varskenda()
     mangija.Joonista(screen)
-
-    for point in pentaGramPoints:
-        pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
 
     zombiesArrived=0
     for zombie in zombies:
@@ -104,15 +116,16 @@ while running:
             timePassedFromSummon=pygame.time.get_ticks()
         elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
             summonProgress=clamp(summonProgress+summonSpeed, 0, 100)
-            print(summonProgress)
             timePassedFromSummon=0
     else:
         if timePassedFromSummon==0:
             timePassedFromSummon=pygame.time.get_ticks()
-        elif pygame.time.get_ticks()>=timePassedFromSummon+0.5*1000:
-            summonProgress=clamp(summonProgress-summonSpeed, 0, 100)
-            print(summonProgress)
+        elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
+            summonProgress=clamp(summonProgress-summonReductionSpeed, 0, 100)
             timePassedFromSummon=0
+    
+    for angel in angels:
+        angel.update(screen, zombies)
 
     # Progress bar
     if summonProgress>=0:
