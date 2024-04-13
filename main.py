@@ -118,6 +118,9 @@ vignette_alpha = 0  # Initial alpha value for vignette
 vignette_speed = 2  # Speed at which the vignette appears
 vignette_color = (0, 0, 0)  # Black color for vignette
 
+stun_cooldown_timer = 0
+stun_cooldown_duration = 10
+
 def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer
     zombies = [spawnZombie(pentaGramPoints)]
@@ -207,12 +210,18 @@ while running:
             mangija.asuky=clamp(mangija.asuky-mangija.kiirus, 0, 720)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             mangija.asuky=clamp(mangija.asuky+mangija.kiirus, 0, 720)
-        if keys[pygame.K_f]:
+        if keys[pygame.K_f] and stun_cooldown_timer <= 0:
             # Iterate over angels and stun those targeting the player
             for angel in angels:
                 if angel.target == mangija:
                     angel.Stunned = True
                     pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
+
+            stun_cooldown_timer = stun_cooldown_duration * 1000
+
+    if stun_cooldown_timer > 0:
+        stun_cooldown_timer -= clock.get_time()
+
 
     # fill the screen with a color to wipe away anything from last frame
 
