@@ -1,5 +1,6 @@
 import pygame
 import random
+from Mangija import Mangija
 from zombie import *
 
 # pygame setup
@@ -11,6 +12,8 @@ running = True
 zombies = []
 
 pentaGramPoints = [(100, 100), (500,500)]
+
+mangija = Mangija(0,0,5)
 
 while running:
     # poll for events
@@ -31,6 +34,10 @@ while running:
             if ((point[0]-x)**2+(point[1]-y)**2) < (zombie.target[0]-x)**2+(zombie.target[1]-y)**2:
                 zombie.target=point
         zombies.append(zombie)
+        
+
+    mangija.Varskenda()
+    mangija.Joonista(screen)
 
     for zombie in zombies:
         zombie.update(screen)
