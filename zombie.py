@@ -58,34 +58,29 @@ class Zombie(pygame.sprite.Sprite):
         self.draw(surface)
 
     def KasSaabPihta(self, asuk, suund):
-        # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuhu mangija osutab, mitte tema selja taga.
+        # Zombi asukoht
+        Z = [self.x, self.y]
+        # Mängija asukoht
+        P = asuk
+        # Mängja suund
+        s = suund
+        # Suuna punkt
+        S = [P[0] + s[0], P[1] + s[1]]
         
-        # Mängija asukohavektor
-        P1 = asuk
-        # Zombi asukohavektor
-        P0 = [self.x, self.y]
-        # Mängija suunavektor
-        S = suund
-        # Mängijast rakendatud zombivektor
-        Z=[P0[0]-P1[0], P0[1]-P1[1]]
-        # Mängija asukohale rakendatud suunavektori koordinaadid
-        P2 = [asuk[0] + suund[0], asuk[1] + suund[1]]        
+        # Küsimus on, kui kaugel on zombi asukoht Z Mängija asukohaga P ja suuna punktiga S määratud sirgest.
+        kaugus = abs((S[0]-P[0])*(Z[1]-P[1]) - (S[1]-P[1])*(Z[0]-P[0])) / ((S[0]-P[0])**2 + (S[1]-P[1])**2)**0.5
+        
 
-        # Seiab nurga P2 ja Z vahel. Kui see on < 0, siis on mängija seljaga zombi poole.
-        koosinus = (S[0]*Z[0]+S[1]*Z[1])/((S[0]**2 + S[1]**2)**0.5 * (Z[0]**2 + Z[1]**2)**0.5)
-        #print(koosinus)
-        
-        try:
-            d = abs((P2[0]-P1[0])*(Z[1]-P1[1]) - (Z[0]-P1[0])*(P2[1]-P1[1]))/(((P2[0]-P1[0])**2)+((P2[1]-P1[1])**2))**0.5
-        except:
-            # Kui toimub nulliga jagamine, ss mdea, mis juhtub, aga igatahes, mängija ei tohiks pihta saada, muidu on exploit.
-            d = self.pihtaSaamisRaadius+1
-        
-        
-        if d < self.pihtaSaamisRaadius and koosinus>0:
+        z = [Z[0] - P[0], Z[1] - P[1]]
+        # Küsimus, on kui suur on vektori s ja vektori z vaheline koosinus.
+        koosinus = (s[0]*z[0] + s[1]*z[1]) / ((s[0]**2+s[1]**2)**0.5 * (z[0]**2+z[1]**2)**0.5)
+
+
+        if kaugus < self.pihtaSaamisRaadius and koosinus > 0:
             return True
         else:
             return False
+        
         
 
         
