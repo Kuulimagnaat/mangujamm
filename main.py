@@ -1,5 +1,6 @@
 import pygame
-import zombie
+import random
+from zombie import *
 
 # pygame setup
 pygame.init()
@@ -8,6 +9,8 @@ clock = pygame.time.Clock()
 running = True
 
 zombies = []
+
+pentaGramPoints = [(100, 100), (500,500)]
 
 while running:
     # poll for events
@@ -20,7 +23,17 @@ while running:
     screen.fill("purple")
 
     if len(zombies) == 0:
-        pass
+        x=random.randrange(0, 1280)
+        y=random.randrange(0,720)
+        zombie = Zombie(x, y, pentaGramPoints[0])
+        print(zombie.x, zombie.y)
+        for point in pentaGramPoints:
+            if ((point[0]-x)**2+(point[1]-y)**2) < (zombie.target[0]-x)**2+(zombie.target[1]-y)**2:
+                zombie.target=point
+        zombies.append(zombie)
+
+    for zombie in zombies:
+        zombie.update(screen)
 
     # RENDER YOUR GAME HERE
 
