@@ -61,7 +61,7 @@ game_over_quotes = [
 ]
 
 # Function to draw Game Over text on the screen
-def draw_game_over_text(screen, chosen_quote, mangija):
+def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     game_over_text = game_over_font.render(chosen_quote, True, (255, 0, 0))
     shadow_text = game_over_font.render(chosen_quote, True, (0,0,0))
     text_rect = game_over_text.get_rect(center=(640, 360))  # Center the text on the screen
@@ -70,7 +70,7 @@ def draw_game_over_text(screen, chosen_quote, mangija):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(game_over_text, text_rect)
 
-    stats_text = f"Zombies Killed: {mangija.zombieKills} | Angels Killed: {mangija.angelKills}"
+    stats_text = f"Friends Killed: {currentZomb} | Angels Killed: {mangija.angelKills}"
     shadow_text = stats_font.render(stats_text, True, (0,0,0))
     stats_rendered = stats_font.render(stats_text, True, (255, 0, 0))
 
@@ -303,11 +303,12 @@ while running:
         
         # Blit the vignette image onto the screen
         screen.blit(vignette_image, (0, 0))  # Adjust position if needed
-        draw_game_over_text(screen, chosen_quote, mangija)
+        draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
         game_over = True
+        currentFriendKills = mangija.zombieKills
         chosen_quote = random.choice(game_over_quotes)
         
         # Disable player controls
