@@ -321,13 +321,12 @@ while running:
 
         backToMainMenuButton.draw(screen)
         for event in events:
-            if event == pygame.MOUSEBUTTONDOWN:
-                print("Hi")
-                if event.button == 1 and backToMainMenuButton.isOver(event.pos):
-                    print("HI2")
-                    mainMenu = True
-                    game_over = False
-                    init()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Check if left mouse button is clicked
+                    if backToMainMenuButton.isOver(event.pos):
+                        mainMenu = True
+                        game_over = False
+                        init()
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
