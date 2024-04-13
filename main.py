@@ -115,7 +115,7 @@ while running:
             if event.button == 1:
                 mangija.TekitaMuzzleFlash(5)
                 TegeleTulistamisega(mangija, zombies, angels)
-                mangija.SaaTagasilööki(30,2.5)
+                mangija.SaaTagasilööki(5,1)
             elif event.button == 3:
                 paused = True
             elif event.button == 2:
@@ -124,7 +124,7 @@ while running:
                 print("zombies on screen: ", len(zombies))
                 print("zombies killed: ", mangija.zombieKills)
                 print("Damage done to angels: ", mangija.damageDone)
-                
+
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
             for angel in angels:

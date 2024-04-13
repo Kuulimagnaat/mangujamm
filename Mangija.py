@@ -78,8 +78,8 @@ class Mangija:
         v2 = self.tagasilöögiKiirus[1]
         k = self.tagasilöögiVähenemiseKiirendus
 
-        self.asukx += v1
-        self.asuky += v2
+        self.asukx = clamp(self.asukx+v1, 0, 1280)
+        self.asuky = clamp(self.asuky+v2, 0, 720)
         
         if self.tagasilöögiKiirus != [0,0]:
             # Vähendatud tagasilöögikiiruse leidmine:
