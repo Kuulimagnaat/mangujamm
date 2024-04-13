@@ -41,24 +41,25 @@ class Zombie(pygame.sprite.Sprite):
     
     # Siia funktiooni on vaja lisada, mis juhtub, kui zombil on elusid vähem kui 0.
     def update(self, surface, mangija=Mangija):
-        if self.walking:
-            targetVector = (self.target[0]-self.x, self.target[1]-self.y)
-            distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-            if distance <= self.kiirus:
-                self.setPos(self.target[0], self.target[1])
-                self.walking = False
-            else:
-                speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
-                self.setPos(self.x+speedVector[0], self.y+speedVector[1])
-        
-        saiPihta = self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
-        if saiPihta == True:
-            self.image.fill((200, 100, 100))
-        else:
-            self.image.fill(self.algvärv)
+        if (self.hp > 0):
+            if self.walking:
+                targetVector = (self.target[0]-self.x, self.target[1]-self.y)
+                distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
+                if distance <= self.kiirus:
+                    self.setPos(self.target[0], self.target[1])
+                    self.walking = False
+                else:
+                    speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
+                    self.setPos(self.x+speedVector[0], self.y+speedVector[1])
             
-        self.draw(surface)
-        if (self.hp <= 0):
+            saiPihta = self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
+            if saiPihta == True:
+                self.image.fill((200, 100, 100))
+            else:
+                self.image.fill(self.algvärv)
+                
+            self.draw(surface)
+        else:
             self.onSurnud = True
 
     def KasSaabPihta(self, asuk, suund):
@@ -97,3 +98,4 @@ class Zombie(pygame.sprite.Sprite):
     
     def SaaViga(self, kahju):
         self.hp -= kahju
+        print("Sain pihta! :(")

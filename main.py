@@ -32,7 +32,8 @@ angels = []
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 
 summonProgress = 0
-summonSpeed = 50
+summonSpeed = 2
+summonReductionSpeed = 1
 timePassedFromSummon = 0
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
@@ -68,10 +69,10 @@ while running:
     screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
 
 
-    if len(zombies) != 6:
+    if len(zombies) != 5:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-    #if len(angles) == 0:
-        #angles.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
+    #if len(angels) == 0:
+        #angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
         
 
     mangija.Varskenda()
@@ -100,14 +101,12 @@ while running:
             timePassedFromSummon=pygame.time.get_ticks()
         elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
             summonProgress=clamp(summonProgress+summonSpeed, 0, 100)
-            print(summonProgress)
             timePassedFromSummon=0
     else:
         if timePassedFromSummon==0:
             timePassedFromSummon=pygame.time.get_ticks()
-        elif pygame.time.get_ticks()>=timePassedFromSummon+0.5*1000:
-            summonProgress=clamp(summonProgress-summonSpeed, 0, 100)
-            print(summonProgress)
+        elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
+            summonProgress=clamp(summonProgress-summonReductionSpeed, 0, 100)
             timePassedFromSummon=0
 
     # Progress bar
