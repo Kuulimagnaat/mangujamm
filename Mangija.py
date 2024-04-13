@@ -1,6 +1,14 @@
 import pygame
 import numpy
 
+def clamp(n, min, max): 
+    if n < min: 
+        return min
+    elif n > max: 
+        return max
+    else: 
+        return n
+
 class Mangija:
     def __init__(self, asukx, asuky, kiirus):
         self.suurus = [30,30]

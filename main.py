@@ -123,7 +123,6 @@ while running:
                 print("zombies on screen: ", len(zombies))
                 print("zombies killed: ", mangija.zombieKills)
                 print("Damage done to angels: ", mangija.damageDone)
-            print("Tulistati!")
 
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
@@ -133,13 +132,14 @@ while running:
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        mangija.asukx=clamp(mangija.asukx-mangija.kiirus, 0, 1280)
         mangija.asukx-= mangija.kiirus
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        mangija.asukx+=mangija.kiirus
+        mangija.asukx=clamp(mangija.asukx+mangija.kiirus, 0, 1280)
     if keys[pygame.K_UP] or keys[pygame.K_w]:
-        mangija.asuky-=mangija.kiirus
+        mangija.asuky=clamp(mangija.asuky-mangija.kiirus, 0, 720)
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        mangija.asuky+=mangija.kiirus
+        mangija.asuky=clamp(mangija.asuky+mangija.kiirus, 0, 720)
     if keys[pygame.K_f]:
         # Iterate over angels and stun those targeting the player
         for angel in angels:
