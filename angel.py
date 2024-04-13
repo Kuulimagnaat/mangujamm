@@ -11,8 +11,8 @@ class Angel(pygame.sprite.Sprite):
         self.y = y
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
-        self.image = pygame.image.load("./assets/ingel.png")
-        self.image = pygame.transform.scale(self.image, (50,50))
+        self.algimage = pygame.image.load("./assets/ingel.png")
+        self.image = self.algimage.copy()
         #self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect()
         self.hp = 30
@@ -51,6 +51,13 @@ class Angel(pygame.sprite.Sprite):
         return self.getPos()[1]
 
     def setPos(self, givenX, givenY):
+        if self.x > givenX:
+            self.image = pygame.transform.flip(self.algimage, flip_x=True, flip_y=False)
+            self.image = pygame.transform.scale(self.image, (self.width,self.height))
+        else:
+            self.image = self.algimage
+            self.image = pygame.transform.scale(self.image, (self.width,self.height))
+            
         self.x = givenX
         self.y = givenY
 
