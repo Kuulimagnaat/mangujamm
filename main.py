@@ -1,5 +1,6 @@
 import pygame
 import random
+from Mangija import Mangija
 from zombie import *
 
 def clamp(n, min, max): 
@@ -24,6 +25,8 @@ timePassedFromSummon = 0
 
 pentaGramPoints = [(100, 100), (500,500), (300, 150)]
 
+mangija = Mangija(0,0,5)
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -36,7 +39,10 @@ while running:
 
     if len(zombies) == 0:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-        zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), zombies[0].target))
+        zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), zombies[0].target))   
+
+    mangija.Varskenda()
+    mangija.Joonista(screen)
 
     for point in pentaGramPoints:
         pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
