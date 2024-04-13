@@ -49,6 +49,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("Tulistati!")
+            mangija.TekitaMuzzleFlash(5)
             Funktsioonid.TegeleTulistamisega(mangija, zombies, angels)
             
     
@@ -71,13 +72,7 @@ while running:
 
 
     if len(zombies) != 6:
-<<<<<<< HEAD
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-=======
-        x = random.randrange(0, 1280)
-        y = random.randrange(0,720)
-        zombies.append(Zombie(x, y, random.choice(pentaGramPoints)))
->>>>>>> ea0bced9a8992199c89466fbc1d425e028e06d12
 
     if len(angels) == 0:
         angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
