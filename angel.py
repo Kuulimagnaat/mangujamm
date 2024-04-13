@@ -11,7 +11,7 @@ class Angel(pygame.sprite.Sprite):
         self.y = y
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
-        self.algimage = pygame.image.load("./assets/ingel.png")
+        self.algimage = pygame.image.load(random.choice(["./assets/ingel1.png", "./assets/ingel2.png"]))
         self.image = self.algimage.copy()
         #self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect()
@@ -248,7 +248,10 @@ class Angel(pygame.sprite.Sprite):
 
         z = [Z[0] - P[0], Z[1] - P[1]]
         # Küsimus, on kui suur on vektori s ja vektori z vaheline koosinus.
-        koosinus = (s[0]*z[0] + s[1]*z[1]) / ((s[0]**2+s[1]**2)**0.5 * (z[0]**2+z[1]**2)**0.5)
+        try:
+            koosinus = (s[0]*z[0] + s[1]*z[1]) / ((s[0]**2+s[1]**2)**0.5 * (z[0]**2+z[1]**2)**0.5)
+        except:
+            koosinus = 0
 
 
         if kaugus < self.pihtaSaamisRaadius and koosinus > 0:
