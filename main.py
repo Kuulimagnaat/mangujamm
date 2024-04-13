@@ -1,6 +1,7 @@
 import pygame
 import random
 from Mangija import Mangija
+import Funktsioonid
 from zombie import *
 
 def clamp(n, min, max): 
@@ -19,6 +20,7 @@ mouse = pygame.mouse
 running = True
 
 zombies = []
+angels = []
 
 summonProgress = 0
 summonSpeed = 2
@@ -35,7 +37,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            zombies.remove(random.choice(zombies))
+            print("Tulistati!")
+            Funktsioonid.TegeleTulistamisega(mangija, zombies, angels)
+            
     
     keys = pygame.key.get_pressed()
 
@@ -63,6 +67,9 @@ while running:
 
     allZombiesArrived = True
     for zombie in zombies:
+        if zombie.onSurnud:
+            zombies.remove(zombie)
+            continue
         newZombiesList = zombies.copy()
         newZombiesList.remove(zombie)
         for zombie2 in newZombiesList:
@@ -87,7 +94,9 @@ while running:
             summonProgress=clamp(summonProgress-summonSpeed, 0, 100)
             print(summonProgress)
             timePassedFromSummon=0
+            
 
+    
 
     # RENDER YOUR GAME HERE
 

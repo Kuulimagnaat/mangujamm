@@ -17,6 +17,7 @@ class Zombie(pygame.sprite.Sprite):
         self.kiirus = 2
         self.walking = True
         self.pihtaSaamisRaadius = 30
+        self.onSurnud = False
         
 
     def getPos(self):
@@ -38,6 +39,7 @@ class Zombie(pygame.sprite.Sprite):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
         pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
     
+    # Siia funktiooni on vaja lisada, mis juhtub, kui zombil on elusid vähem kui 0.
     def update(self, surface, mangija=Mangija):
         if self.walking:
             targetVector = (self.target[0]-self.x, self.target[1]-self.y)
@@ -56,6 +58,8 @@ class Zombie(pygame.sprite.Sprite):
             self.image.fill(self.algvärv)
             
         self.draw(surface)
+        if (self.hp <= 0):
+            self.onSurnud = True
 
     def KasSaabPihta(self, asuk, suund):
         # Zombi asukoht
@@ -81,8 +85,15 @@ class Zombie(pygame.sprite.Sprite):
         else:
             return False
         
-        
+    def LeiaKaugusMangijast(self, mangija:Mangija):
+        P1 = [self.x, self.y]
+        P2 = [mangija.asukx, mangija.asuky]
+        V = [P2[0]-P1[0], P2[1]-P1[1]]
+        l = (V[0]**2 + V[1]**2)**0.5
+        return l
 
-        
     def KasKuulKattub(self, kuul):
         pass
+    
+    def SaaViga(self, kahju):
+        self.hp -= kahju
