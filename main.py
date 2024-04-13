@@ -2,6 +2,7 @@ import pygame
 import random
 from Mangija import Mangija
 from Funktsioonid import *
+from button import *
 
 def clamp(n, min, max): 
     if n < min: 
@@ -18,7 +19,7 @@ pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 30)
 
 screen = pygame.display.set_mode((1280, 720))
-
+pygame.display.set_caption("DemonSUMMON")
 
 clock = pygame.time.Clock()
 mouse = pygame.mouse
@@ -47,18 +48,89 @@ maxAngels = 10
 
 mangija = Mangija.Mangija(100,100,5)
 
+paused = False
+mainMenu = True
+
+menuWidth, menuHeight = 400, 350
+
+# Pause menu
+continueButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Continue")
+exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100, "Exit")
+
+#Main menu
+startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
+
+def init():
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie
+    zombies = [spawnZombie(pentaGramPoints)]
+    angels = []
+    mangija = Mangija.Mangija(0,0,5)
+    timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
+    
+    screen.fill("purple")
+
+    if mainMenu or paused:
+        pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
+        exitButton.draw(screen)
+
+    if mainMenu:
+        startButton.draw(screen)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if startButton.isOver(mouse.get_pos()):
+                        mainMenu = False
+                        init()
+                    elif exitButton.isOver(mouse.get_pos()):
+                        running= False
+        pygame.display.flip()
+        clock.tick(60)
+        continue
+    
+    if paused:
+        continueButton.draw(screen)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if continueButton.isOver(mouse.get_pos()):
+                        paused = False
+                    elif exitButton.isOver(mouse.get_pos()):
+                        paused = False
+                        mainMenu = True
+
+        pygame.display.flip()
+        clock.tick(60)
+        continue
+
+    for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                mangija.TekitaMuzzleFlash(5)
+                TegeleTulistamisega(mangija, zombies, angels)
+            elif event.button == 3:
+                paused = True
+            elif event.button == 2:
+                print("angels on screen: ", len(angels))
+                print("angels killed: ", mangija.angelKills)
+                print("zombies on screen: ", len(zombies))
+                print("zombies killed: ", mangija.zombieKills)
+                print("Damage done to angels: ", mangija.damageDone)
             print("Tulistati!")
             mangija.TekitaMuzzleFlash(5)
             TegeleTulistamisega(mangija, zombies, angels)
             mangija.SaaTagasilööki(30,2.5)
             
+        if event.type == pygame.USEREVENT + 3:
+            for angel in angels:
+                angel.Stunned = False
     
     keys = pygame.key.get_pressed()
 
@@ -70,9 +142,14 @@ while running:
         mangija.asuky-=mangija.kiirus
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
         mangija.asuky+=mangija.kiirus
+    if keys[pygame.K_f]:
+        # Iterate over angels and stun those targeting the player
+        for angel in angels:
+            if angel.target == mangija:
+                angel.Stunned = True
+                pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
 
     #Pentagram
     screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
@@ -143,7 +220,6 @@ while running:
         text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
-    
 
     # RENDER YOUR GAME HERE
 

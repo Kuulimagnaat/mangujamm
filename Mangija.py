@@ -19,6 +19,11 @@ class Mangija:
         # Suund olgu alati �hikvektor
         self.suund = [1.0,0.0]
         self.damage = 10
+        self.angelKills = 0
+        self.zombieKills = 0
+        self.damageDone = 0
+
+        self.pihtaSaamisRaadius = 75
 
         # Health bar parameters
         self.health_bar_length = self.suurus[0]
@@ -121,7 +126,6 @@ class Mangija:
         det = x1*y2 - y1*x2      # determinant
         angle = numpy.arctan2(det, dot)
         nurk = numpy.rad2deg(angle)
-        print(nurk)
         return nurk-90
         
         

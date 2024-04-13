@@ -14,7 +14,7 @@ class Angel(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.hp = 100
+        self.hp = 30
         self.target = target
         self.kiirus = 4
         self.slow_speed = 2
@@ -22,10 +22,11 @@ class Angel(pygame.sprite.Sprite):
         self.attacking = False
 
         self.onSurnud = False
+        self.Stunned = False
 
         self.damage = 10
         self.pihtaSaamisRaadius = 50
-        self.detection_radius = 200  # Detection radius for the angel
+        self.detection_radius = 250  # Detection radius for the angel
         
         self.last_attack_time = 0
         self.attack_delay = 1000
@@ -58,7 +59,7 @@ class Angel(pygame.sprite.Sprite):
         health_bar_y = self.y - self.height / 2 - 10
         
         # Calculate health bar width based on current health
-        health_width = (self.hp / 100) * self.health_bar_length
+        health_width = (self.hp / 30) * self.health_bar_length
         
         # Draw health bar background
         pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, self.health_bar_length, self.health_bar_height))
@@ -68,10 +69,10 @@ class Angel(pygame.sprite.Sprite):
     def draw(self, surface):
         if self.attacking:
             color = (255, 0, 0)  # Red when attacking
+        elif self.target == None or self.Stunned:
+            color = (255, 255, 0)  # Yellow when aimlessly walking
         elif self.target != None:
             color = (255, 255, 255)  # White when following target
-        else:
-            color = (255, 255, 0)  # Yellow when aimlessly walking
         self.image.fill(color)
         surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
@@ -102,24 +103,34 @@ class Angel(pygame.sprite.Sprite):
         # Check for nearby zombies within detection radius
         nearby_entities = [entity for entity in zombieList + [mangija] if self.distance_to_zombie(entity) <= self.detection_radius]
         if nearby_entities:
-            new_target = random.choice(nearby_entities)
-            self.target = new_target
+            # Calculate distances to each entity
+            distances = [self.distance_to_zombie(entity) for entity in nearby_entities]
+            # Choose the entity with the minimum distance
+            min_distance_entity = nearby_entities[distances.index(min(distances))]
+            self.target = min_distance_entity
 
 
     def update(self, surface, zombieList, mangija=Mangija):
-        if (self.hp > 0):
+        self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
+        if (not self.Stunned and self.hp > 0):
             if self.walking and self.target != None:
-                #Detect bullets
-                self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
-
                 if self.target.getHP() <= 0 or self.target == None:
                     self.walking = True
                     self.target = None
                     self.aimless_walking(zombieList, mangija)
                 else:
+                    # Check for nearby zombies within detection radius
+                    nearby_entities = [entity for entity in zombieList + [mangija] if self.distance_to_zombie(entity) <= self.detection_radius]
+                    if nearby_entities:
+                        # Calculate distances to each entity
+                        distances = [self.distance_to_zombie(entity) for entity in nearby_entities]
+                        # Choose the entity with the minimum distance
+                        min_distance_entity = nearby_entities[distances.index(min(distances))]
+                        self.target = min_distance_entity
+                        
                     targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
                     distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-                    if distance <= self.kiirus:
+                    if distance <= self.target.pihtaSaamisRaadius:
                         self.walking = False
                         self.attacking = True
                         self.attackMode(zombieList, mangija)
@@ -136,6 +147,17 @@ class Angel(pygame.sprite.Sprite):
             self.draw_health_bar(surface)
             self.draw_dot(surface)
             self.draw_detection_radius(surface)  # Draw detection radius
+
+        elif self.Stunned == True:
+            self.target = None
+            self.attacking = False
+            self.walking = True
+            self.aimless_walking(zombieList, mangija)
+
+            self.draw(surface)   
+            self.draw_health_bar(surface)
+            self.draw_dot(surface)
+            self.draw_detection_radius(surface)  # Draw detection radius       
         else:
             self.onSurnud = True
 
@@ -153,10 +175,7 @@ class Angel(pygame.sprite.Sprite):
                 self.attacking = False
                 self.target = None
                 
-                nearby_entities = [entity for entity in zombieList + [mangija] if self.distance_to_zombie(entity) <= self.detection_radius]
-                if nearby_entities:
-                    new_target = random.choice(nearby_entities)
-                    self.target = new_target
+                self.aimless_walking(zombieList, mangija)
             else:
                 target_x, target_y = self.target.getPos()
                 teleport_distance = 75
