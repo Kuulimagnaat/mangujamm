@@ -66,6 +66,7 @@ class Zombie(pygame.sprite.Sprite):
                 self.image.fill(self.algvärv)
                 
             self.draw(surface)
+            self.draw_dot(surface)
         else:
             self.onSurnud = True
 
