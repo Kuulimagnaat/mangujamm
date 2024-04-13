@@ -8,6 +8,7 @@ class Zombie(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
         self.image = pygame.Surface([self.width, self.height])
+        #self.image = 
         self.algvärv = (255, 0,0)
         self.rect = self.image.get_rect()
         self.x = x
@@ -21,7 +22,12 @@ class Zombie(pygame.sprite.Sprite):
         
         # Dot parameters
         self.dot_radius = 2
-        self.dot_color = (0, 255, 0)  # Green color for the dot
+        self.dot_color = (0, 255, 0)
+
+        # Health bar parameters
+        self.health_bar_length = self.width
+        self.health_bar_height = 5
+        self.health_bar_color = (0, 255, 0)
 
     def getHP(self):
         return self.hp
@@ -44,9 +50,21 @@ class Zombie(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
         pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
+
+    def draw_health_bar(self, surface):
+        # Calculate health bar position
+        health_bar_x = self.x - self.width / 2
+        health_bar_y = self.y - self.height / 2 - 10
+        
+        # Calculate health bar width based on current health
+        health_width = (self.hp / 30) * self.health_bar_length
+        
+        # Draw health bar background
+        pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, self.health_bar_length, self.health_bar_height))
+        # Draw health bar
+        pygame.draw.rect(surface, self.health_bar_color, (health_bar_x, health_bar_y, health_width, self.health_bar_height))
     
     def draw_dot(self, surface):
-        # Draw dot at the zombie's position
         pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)
 
     # Siia funktiooni on vaja lisada, mis juhtub, kui zombil on elusid vähem kui 0.
@@ -61,7 +79,7 @@ class Zombie(pygame.sprite.Sprite):
                 else:
                     speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                     self.setPos(self.x+speedVector[0], self.y+speedVector[1])
-            
+           
             saiPihta = self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
             if saiPihta == True:
                 self.image.fill((200, 100, 100))
@@ -69,6 +87,7 @@ class Zombie(pygame.sprite.Sprite):
                 self.image.fill(self.algvärv)
                 
             self.draw(surface)
+            self.draw_health_bar(surface)
             self.draw_dot(surface)
         else:
             mangija.zombieKills += 1

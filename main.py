@@ -10,7 +10,7 @@ def clamp(n, min, max):
     elif n > max: 
         return max
     else: 
-        return n 
+        return n
 
 # pygame setup
 pygame.init()
@@ -84,13 +84,13 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 print("Tulistati!")
+                mangija.TekitaMuzzleFlash(5)
                 TegeleTulistamisega(mangija, zombies, angels)
             elif event.button == 3:
                 paused = True
             elif event.button == 2:
                 print("angels: ", len(angels))
                 print("kills: ", mangija.angelKills)
-    
     
     keys = pygame.key.get_pressed()
 
