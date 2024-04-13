@@ -369,7 +369,7 @@ while running:
 
     #Game victory
     # Check if victory condition is met
-    if summonProgress >= 2 or game_won:
+    if summonProgress >= 100 or game_won:
         game_won = True
         mangija.elud = 0 #to avoid attacks
         # Display victory screen
