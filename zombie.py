@@ -47,7 +47,7 @@ class Zombie(pygame.sprite.Sprite):
                 
 
     def KasSaabPihta(self, asuk, suund):
-        # Vaja on lisada kontroll, et kas zombi on ikka sirgele l�hedal seal suunas, kuju m�ngija osutab, mitte tema selja taga.
+        # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuju mangija osutab, mitte tema selja taga.
         vahevek = [self.x - asuk[0], self.y - asuk[1]]
         sihivek = suund
         vekkorr = cross(vahevek, sihivek)
@@ -62,6 +62,4 @@ class Zombie(pygame.sprite.Sprite):
 
         
     def KasKuulKattub(self, kuul):
-        pass    
-        
-        
+        pass
