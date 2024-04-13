@@ -34,6 +34,7 @@ class Zombie(pygame.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
+        pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
     
     def update(self, surface, mangija=Mangija):
         if self.walking:
@@ -55,12 +56,33 @@ class Zombie(pygame.sprite.Sprite):
         self.draw(surface)
 
     def KasSaabPihta(self, asuk, suund):
-        # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuju mangija osutab, mitte tema selja taga.
+        # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuhu mangija osutab, mitte tema selja taga.
+        
+        # Mängija asukohavektor
         P1 = asuk
-        P2 = [asuk[0] + suund[0], asuk[1] + suund[1]]
+        # Zombi asukohavektor
         P0 = [self.x, self.y]
-        d = abs((P2[0]-P1[0])*(P0[1]-P1[1]) - (P0[0]-P1[0])*(P2[1]-P1[1]))/(((P2[0]-P1[0])**2)+((P2[0]-P1[0])**2))**0.5
-        if d < self.pihtaSaamisRaadius:
+        # Mängija suunavektor
+        S = suund
+        # Mängijast rakendatud zombivektor
+        Z=[P0[0]-P1[0], P0[1]-P1[1]]
+        # Mängija asukohale rakendatud suunavektori koordinaadid
+        P2 = [asuk[0] + suund[0], asuk[1] + suund[1]]
+        print(P2)
+        
+
+        # Seiab nurga P2 ja Z vahel. Kui see on < 0, siis on mängija seljaga zombi poole.
+        koosinus = (S[0]*Z[0]+S[1]*Z[1])/  ((S[0]**2 + S[1]**2)**0.5 * (Z[0]**2 + Z[1]**2)**0.5)
+        #print(koosinus)
+        
+        try:
+            d = abs((P2[0]-P1[0])*(Z[1]-P1[1]) - (Z[0]-P1[0])*(P2[1]-P1[1]))/(((P2[0]-P1[0])**2)+((P2[1]-P1[1])**2))**0.5
+        except:
+            # Kui toimub nulliga jagamine, ss mdea, mis juhtub, aga igatahes, mängija ei tohiks pihta saada, muidu on exploit.
+            d = self.pihtaSaamisRaadius+1
+        
+        
+        if d < self.pihtaSaamisRaadius and koosinus>0:
             return True
         else:
             return False
