@@ -2,6 +2,7 @@ import pygame
 from zombie import Zombie
 from numpy import linalg, cross
 from Mangija import Mangija
+import math
 
 class Angel(pygame.sprite.Sprite):
     def __init__(self, x, y, target=Zombie):
@@ -84,8 +85,6 @@ class Angel(pygame.sprite.Sprite):
             self.setPos(*teleport_point)
 
             self.last_attack_time = current_time
-
-
 
     def KasSaabPihta(self, asuk, suund):
         # Ingli asukoht
