@@ -42,7 +42,7 @@ while running:
         pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
 
     for zombie in zombies:
-        zombie.update(screen)
+        zombie.update(screen, mangija)
 
     # RENDER YOUR GAME HERE
 

@@ -8,7 +8,7 @@ class Zombie(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
         self.image = pygame.Surface([self.width, self.height])
-        self.algVärv = (255, 0,0)
+        self.algvärv = (255, 0,0)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -16,7 +16,7 @@ class Zombie(pygame.sprite.Sprite):
         self.target = target
         self.kiirus = 2
         self.walking = True
-        self.pihtaSaamisRaadius = 50
+        self.pihtaSaamisRaadius = 30
         
 
 
@@ -46,7 +46,7 @@ class Zombie(pygame.sprite.Sprite):
                 speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                 self.setPos(self.x+speedVector[0], self.y+speedVector[1])
         
-        saiPihta = self.KasSaabPihta(mangija.VotaAsuk, mangija.VotaSuund)
+        saiPihta = self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
         if saiPihta == True:
             self.image.fill((200, 100, 100))
         else:
@@ -56,13 +56,11 @@ class Zombie(pygame.sprite.Sprite):
 
     def KasSaabPihta(self, asuk, suund):
         # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuju mangija osutab, mitte tema selja taga.
-        vahevek = [self.x - asuk[0], self.y - asuk[1]]
-        sihivek = suund
-        vekkorr = cross(vahevek, sihivek)
-        vekkorrp = linalg.norm(vekkorr, ord = 2)
-        sihivekp = linalg.norm(sihivek, ord = 2)
-        vastus = vekkorrp / sihivekp
-        if vastus < self.pihtaSaamisRaadius:
+        P1 = asuk
+        P2 = [asuk[0] + suund[0], asuk[1] + suund[1]]
+        P0 = [self.x, self.y]
+        d = abs((P2[0]-P1[0])*(P0[1]-P1[1]) - (P0[0]-P1[0])*(P2[1]-P1[1]))/(((P2[0]-P1[0])**2)+((P2[0]-P1[0])**2))**0.5
+        if d < self.pihtaSaamisRaadius:
             return True
         else:
             return False
