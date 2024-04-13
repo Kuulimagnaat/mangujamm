@@ -1,4 +1,4 @@
-class Mängija:
+class Mangija:
     def __init__(self, asukx, asuky, kiirus):
         self.asukx = 0
         self.asuky = 0
@@ -6,7 +6,7 @@ class Mängija:
         self.elud = 100
         self.suund = [100,0]
         
-    def VõtaAsuk(self):
+    def VaataAsuk(self):
         return self.asukx, self.asuky
     
     def Tulista(self, tegelasteNimek):

@@ -3,6 +3,9 @@ import pygame
 class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y, target=(0,0)):
         pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([100, 100])
+        self.image.fill((255,255,255))
+        self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.hp = 30
@@ -17,13 +20,18 @@ class Zombie(pygame.sprite.Sprite):
     def setPos(self, givenX, givenY):
         self.x = givenX
         self.y = givenY
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.x, self.y))
     
-    def update(self):
+    def update(self, surface):
         if self.walking:
-            targetVector = (self.x-self.target[0], self.y-self.target[1])
+            targetVector = (self.target[0]-self.x, self.target[1]-self.y)
             distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-            if distance <= 0.01:
+            if distance <= self.kiirus:
                 self.setPos(self.target[0], self.target[1])
+                self.walking = False
             else:
                 speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                 self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+        self.draw(surface)
