@@ -2,9 +2,6 @@ import pygame
 import random
 from Mangija import Mangija
 from Funktsioonid import *
-from zombie import *
-from angel import *
-from angel import Angel
 
 def clamp(n, min, max): 
     if n < min: 
@@ -48,7 +45,7 @@ timePassedFromAngel = 0
 maxAngels = 10
 
 
-mangija = Mangija(0,0,5)
+mangija = Mangija.Mangija(0,0,5)
 
 while running:
     # poll for events
