@@ -141,7 +141,7 @@ while running:
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
     for angel in angels:
-        angel.update(screen)
+        angel.update(screen, zombies)
 
     
 
