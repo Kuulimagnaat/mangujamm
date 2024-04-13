@@ -60,6 +60,13 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
 
+def init():
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie
+    zombies = [spawnZombie(pentaGramPoints)]
+    angels = []
+    mangija = Mangija.Mangija(0,0,5)
+    timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -81,6 +88,7 @@ while running:
                 if event.button == 1:
                     if startButton.isOver(mouse.get_pos()):
                         mainMenu = False
+                        init()
                     elif exitButton.isOver(mouse.get_pos()):
                         running= False
         pygame.display.flip()
@@ -95,7 +103,8 @@ while running:
                     if continueButton.isOver(mouse.get_pos()):
                         paused = False
                     elif exitButton.isOver(mouse.get_pos()):
-                        running= mainMenu
+                        paused = False
+                        mainMenu = True
 
         pygame.display.flip()
         clock.tick(60)
@@ -115,8 +124,6 @@ while running:
                 print("zombies killed: ", mangija.zombieKills)
                 print("Damage done to angels: ", mangija.damageDone)
             print("Tulistati!")
-            mangija.TekitaMuzzleFlash(5)
-            TegeleTulistamisega(mangija, zombies, angels)
 
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
@@ -219,6 +226,5 @@ while running:
     pygame.display.flip()
 
     clock.tick(60)  # limits FPS to 60
-
 
 pygame.quit()
