@@ -54,7 +54,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print("Tulistati!")
+            #print("Tulistati!")
             TegeleTulistamisega(mangija, zombies, angels)
             
     
@@ -124,7 +124,9 @@ while running:
             timePassedFromSummon=0
     
     for angel in angels:
-        angel.update(screen, zombies)
+        angel.update(screen, zombies, mangija)
+        if angel.onSurnud:
+            angels.remove(angel)
 
     # Progress bar
     if summonProgress>=0:

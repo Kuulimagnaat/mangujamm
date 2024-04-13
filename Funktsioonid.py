@@ -28,7 +28,6 @@ def TegeleTulistamisega(mangija:Mangija.Mangija, zombinimek:List[zombie.Zombie],
     
     ipihtasaajad.sort(key=sortija)
 
-
     if (len(ipihtasaajad) != 0 and len(zpihtasaajad) != 0):
         if (ipihtasaajad[0].LeiaKaugusMangijast(mangija) <= zpihtasaajad[0].LeiaKaugusMangijast(mangija)):
             ipihtasaajad[0].SaaViga(bulletDamage)

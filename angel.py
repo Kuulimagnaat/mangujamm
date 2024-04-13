@@ -21,6 +21,8 @@ class Angel(pygame.sprite.Sprite):
         self.walking = True
         self.attacking = False
 
+        self.onSurnud = False
+
         self.damage = 10
         self.pihtaSaamisRaadius = 50
         self.detection_radius = 200  # Detection radius for the angel
@@ -86,31 +88,37 @@ class Angel(pygame.sprite.Sprite):
             self.walking = True
 
 
-    def update(self, surface, zombieList):
-        if self.walking and self.target != None:
-            if self.target.getHP() <= 0 or self.target == None:
-                self.walking = True
-                self.target = None
-                self.aimless_walking(zombieList)
-            else:
-                targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
-                distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-                if distance <= self.kiirus:
-                    self.walking = False
-                    self.attacking = True
-                    self.attackMode(zombieList)
+    def update(self, surface, zombieList, mangija=Mangija):
+        if (self.hp > 0):
+            if self.walking and self.target != None:
+                #Detect bullets
+                self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
+
+                if self.target.getHP() <= 0 or self.target == None:
+                    self.walking = True
+                    self.target = None
+                    self.aimless_walking(zombieList)
                 else:
-                    speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
-                    self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+                    targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
+                    distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
+                    if distance <= self.kiirus:
+                        self.walking = False
+                        self.attacking = True
+                        self.attackMode(zombieList)
+                    else:
+                        speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
+                        self.setPos(self.x+speedVector[0], self.y+speedVector[1])
 
-        elif self.attacking:
-            self.attackMode(zombieList)
+            elif self.attacking:
+                self.attackMode(zombieList)
+            else:
+                self.aimless_walking(zombieList)
+
+            self.draw(surface)
+            self.draw_dot(surface)
+            self.draw_detection_radius(surface)  # Draw detection radius
         else:
-            self.aimless_walking(zombieList)
-
-        self.draw(surface)
-        self.draw_dot(surface)
-        self.draw_detection_radius(surface)  # Draw detection radius
+            self.onSurnud = True
 
     def draw_dot(self, surface):
         pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)

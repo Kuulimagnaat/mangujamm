@@ -109,4 +109,4 @@ class Zombie(pygame.sprite.Sprite):
     
     def SaaViga(self, kahju):
         self.hp -= kahju
-        print("Sain pihta! :(")
+        #print("Sain pihta! :(")
