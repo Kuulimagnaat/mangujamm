@@ -10,6 +10,9 @@ class Mangija:
         # Suund olgu alati �hikvektor
         self.suund = [1.0,0.0]
         self.damage = 10
+        self.angelKills = 0
+        self.zombieKills = 0
+        self.damageDone = 0
         
     def VotaAsuk(self):
         return self.asukx, self.asuky

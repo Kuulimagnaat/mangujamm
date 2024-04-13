@@ -14,7 +14,7 @@ class Angel(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.hp = 100
+        self.hp = 30
         self.target = target
         self.kiirus = 4
         self.slow_speed = 2

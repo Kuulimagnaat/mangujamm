@@ -22,6 +22,7 @@ screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("DemonSUMMON")
 
 clock = pygame.time.Clock()
+mouse = pygame.mouse
 running = True
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
@@ -47,7 +48,11 @@ maxAngels = 10
 
 mangija = Mangija.Mangija(0,0,5)
 
-paused = False
+paused = True
+
+menuWidth, menuHeight = 400, 350
+continueButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Continue")
+exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100, "Exit")
 
 while running:
     # poll for events
@@ -59,12 +64,17 @@ while running:
     
     screen.fill("purple")
     if paused:
-        menuWidth, menuHeight = 400, 350
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
-        #continueButton = Button()
+        continueButton.draw(screen)
+        exitButton.draw(screen)
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
+                if event.button == 1:
+                    if continueButton.isOver(mouse.get_pos()):
+                        paused = False
+                    elif exitButton.isOver(mouse.get_pos()):
+                        running= False
+
                 
         pygame.display.flip()
         clock.tick(60)
@@ -77,6 +87,9 @@ while running:
                 TegeleTulistamisega(mangija, zombies, angels)
             elif event.button == 3:
                 paused = True
+            elif event.button == 2:
+                print("angels: ", len(angels))
+                print("kills: ", mangija.angelKills)
     
     
     keys = pygame.key.get_pressed()
