@@ -46,10 +46,18 @@ def TegeleTulistamisega(mangija:Mangija.Mangija, zombinimek:List[zombie.Zombie],
     else:
         pass
 
-def spawnZombie(points):
-    return zombie.Zombie(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),
+def spawnZombie(points, n=1):
+    if n == 1:
+        return zombie.Zombie(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),
                               random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(720, 720+10),
                               random.choice(points))
+    else:
+        result = []
+        for i in range(0, n):
+            result.append(zombie.Zombie(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),
+                              random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(720, 720+10),
+                              random.choice(points)))
+        return result
 
 def spawnAngel(zombies):
     return angel.Angel(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),

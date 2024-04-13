@@ -150,7 +150,7 @@ def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
-    mangija = Mangija.Mangija(0,0,5)
+    mangija = Mangija.Mangija(1280/2,720/2,5)
     timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
     game_over=False
     vignette_alpha
