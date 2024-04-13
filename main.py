@@ -2,9 +2,6 @@ import pygame
 import random
 from Mangija import Mangija
 from Funktsioonid import *
-from zombie import *
-from angel import *
-from angel import Angel
 
 def clamp(n, min, max): 
     if n < min: 
@@ -48,7 +45,7 @@ timePassedFromAngel = 0
 maxAngels = 10
 
 
-mangija = Mangija(0,0,5)
+mangija = Mangija.Mangija(0,0,5)
 
 while running:
     # poll for events
@@ -80,17 +77,19 @@ while running:
     for point in pentaGramPoints:
         pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
 
-    if timePassedFromZombie == 0 and len(zombies)<=maxZombies:
-        timePassedFromZombie = pygame.time.get_ticks()
-    elif pygame.time.get_ticks() >= timePassedFromZombie + zombieSpawnTimer*1000:
-        zombies.append(spawnZombie(pentaGramPoints))
-        timePassedFromZombie=0
+    if len(zombies)<=maxZombies:
+        if timePassedFromZombie == 0:
+            timePassedFromZombie = pygame.time.get_ticks()
+        elif pygame.time.get_ticks() >= timePassedFromZombie + zombieSpawnTimer*1000:
+            zombies.append(spawnZombie(pentaGramPoints))
+            timePassedFromZombie=0
 
-    if timePassedFromAngel == 0 and len(angels)<=maxAngels:
-        timePassedFromAngel = pygame.time.get_ticks()
-    elif pygame.time.get_ticks() >= timePassedFromAngel + angelSpawnTimer*1000:
-        angels.append(spawnAngel(zombies))
-        timePassedFromAngel=0
+    if len(angels)<=maxAngels:
+        if timePassedFromAngel == 0:
+            timePassedFromAngel = pygame.time.get_ticks()
+        elif pygame.time.get_ticks() >= timePassedFromAngel + angelSpawnTimer*1000:
+            angels.append(spawnAngel(zombies))
+            timePassedFromAngel=0
 
 
     mangija.Varskenda()
