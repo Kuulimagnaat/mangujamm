@@ -60,6 +60,8 @@ game_over_quotes = [
     "In the depths of despair, find solace in the void."
 ]
 
+backToMainMenuButton = Button((1280-300)/2, 400, 300, 100, "Back to Main Menu", bgcolor=(15,15,15), textcolor=(255,255,255))
+
 # Function to draw Game Over text on the screen
 def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     game_over_text = game_over_font.render(chosen_quote, True, (255, 0, 0))
@@ -80,6 +82,7 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     
     screen.blit(shadow_text, shadow_rect)
     screen.blit(stats_rendered, stats_rect)
+
 
 summonProgress = 0
 summonSpeed = 2
@@ -118,12 +121,17 @@ vignette_alpha = 0  # Initial alpha value for vignette
 vignette_speed = 2  # Speed at which the vignette appears
 vignette_color = (0, 0, 0)  # Black color for vignette
 
+stun_cooldown_timer = 0
+stun_cooldown_duration = 10
+
 def init():
-    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
     mangija = Mangija.Mangija(0,0,5)
     timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
+    game_over=False
+    vignette_alpha
 
 while running:
     # poll for events
@@ -207,12 +215,18 @@ while running:
             mangija.asuky=clamp(mangija.asuky-mangija.kiirus, 0, 720)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             mangija.asuky=clamp(mangija.asuky+mangija.kiirus, 0, 720)
-        if keys[pygame.K_f]:
+        if keys[pygame.K_f] and stun_cooldown_timer <= 0:
             # Iterate over angels and stun those targeting the player
             for angel in angels:
                 if angel.target == mangija:
                     angel.Stunned = True
                     pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
+
+            stun_cooldown_timer = stun_cooldown_duration * 1000
+
+    if stun_cooldown_timer > 0:
+        stun_cooldown_timer -= clock.get_time()
+
 
     # fill the screen with a color to wipe away anything from last frame
 
@@ -304,6 +318,16 @@ while running:
         # Blit the vignette image onto the screen
         screen.blit(vignette_image, (0, 0))  # Adjust position if needed
         draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
+
+        backToMainMenuButton.draw(screen)
+        for event in events:
+            if event == pygame.MOUSEBUTTONDOWN:
+                print("Hi")
+                if event.button == 1 and backToMainMenuButton.isOver(event.pos):
+                    print("HI2")
+                    mainMenu = True
+                    game_over = False
+                    init()
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
@@ -314,7 +338,6 @@ while running:
         # Disable player controls
         keys = pygame.key.get_pressed()  # Clear the key state
 
-    # RENDER YOUR GAME HERE
 
     # flip() the display to put your work on screen
     pygame.display.flip()
