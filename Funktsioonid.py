@@ -1,4 +1,4 @@
-import Mangija, zombie, angel
+import Mangija, zombie, angel, random
 from typing import List
 
 def TegeleTulistamisega(mangija:Mangija.Mangija, zombinimek:List[zombie.Zombie], inglinimek:List[angel.Angel]):
@@ -43,3 +43,13 @@ def TegeleTulistamisega(mangija:Mangija.Mangija, zombinimek:List[zombie.Zombie],
         
     else:
         pass
+
+def spawnZombie(points):
+    return zombie.Zombie(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),
+                              random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(720, 720+10),
+                              random.choice(points))
+
+def spawnAngel(zombies):
+    return angel.Angel(random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(1280, 1280+10),
+                             random.randrange(-10, 0) if random.random() < 0.5 else random.randrange(720, 720+10),
+                             random.choice(zombies) if len(zombies)!= 0 else 0)
