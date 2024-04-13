@@ -7,13 +7,14 @@ import random
 
 class Angel(pygame.sprite.Sprite):
     def __init__(self, x, y, target):
-        pygame.sprite.Sprite.__init__(self)
-        self.width, self.height = 50, 50
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
         self.x = x
         self.y = y
+        pygame.sprite.Sprite.__init__(self)
+        self.width, self.height = 50, 50
+        self.image = pygame.image.load("./assets/ingel.png")
+        self.image = pygame.transform.scale(self.image, (50,50))
+        #self.image.fill((255, 255, 255))
+        self.rect = self.image.get_rect()
         self.hp = 30
         self.target = target
         self.kiirus = 4
@@ -73,7 +74,7 @@ class Angel(pygame.sprite.Sprite):
             color = (255, 255, 0)  # Yellow when aimlessly walking
         elif self.target != None:
             color = (255, 255, 255)  # White when following target
-        self.image.fill(color)
+        #self.image.fill(color)
         surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def aimless_walking(self, zombieList, mangija):
