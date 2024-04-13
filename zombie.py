@@ -17,7 +17,6 @@ class Zombie(pygame.sprite.Sprite):
         self.pihtaSaamisRaadius = 50
         
 
-
     def getPos(self):
         return (self.x, self.y)
     
