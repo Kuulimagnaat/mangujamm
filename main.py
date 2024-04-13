@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-﻿
-=======
 import pygame
 
 # pygame setup
