@@ -9,7 +9,7 @@ def clamp(n, min, max):
     elif n > max: 
         return max
     else: 
-        return n 
+        return n
 
 # pygame setup
 pygame.init()
