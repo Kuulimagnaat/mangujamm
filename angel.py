@@ -32,6 +32,18 @@ class Angel(pygame.sprite.Sprite):
         self.last_attack_time = 0
         self.attack_delay = 1000
 
+        self.sword_slash_images = [
+            pygame.image.load("./assets/sword_slash_1.png"),
+            pygame.image.load("./assets/sword_slash_2.png"),
+            pygame.image.load("./assets/sword_slash_3.png"),
+            pygame.image.load("./assets/sword_slash_4.png"),
+            pygame.image.load("./assets/sword_slash_5.png")
+        ]
+        self.current_slash_index = 0
+        self.frame_delay = 3
+        self.slash_duration = 5  # Duration (in frames) for each slash image
+        self.slash_timer = 0
+
         # Dot parameters
         self.dot_radius = 2
         self.dot_color = (0, 255, 0)
@@ -82,6 +94,7 @@ class Angel(pygame.sprite.Sprite):
         elif self.target != None:
             color = (255, 255, 255)  # White when following target
         #self.image.fill(color)
+
         surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def aimless_walking(self, zombieList, mangija):
@@ -147,7 +160,22 @@ class Angel(pygame.sprite.Sprite):
                         self.setPos(self.x+speedVector[0], self.y+speedVector[1])
 
             elif self.attacking:
-                self.attackMode(zombieList, mangija)
+                if self.target.getHP() <= 0 or self.target == None:  # Check if target is dead or None
+                    self.walking = True
+                    self.attacking = False
+                    self.target = None
+                    self.aimless_walking(zombieList, mangija)
+                else:
+                    if self.slash_timer == 0:
+                        self.current_slash_index = random.randint(0, len(self.sword_slash_images) - 1)  # Choose a random slash image
+                    self.slash_timer += 1
+                    if self.slash_timer >= self.slash_duration:
+                        self.slash_timer = 0  # Reset slash timer after finishing the duration
+                        self.current_slash_index = None  # Clear current slash index
+                    elif self.current_slash_index is not None:
+                        if self.slash_timer % self.frame_delay == 0:  # Add a delay between frames
+                            self.draw_sword_slashing(surface)  # Draw current slash image
+                    self.attackMode(zombieList, mangija)
             else:
                 self.aimless_walking(zombieList, mangija)
 
@@ -168,6 +196,10 @@ class Angel(pygame.sprite.Sprite):
             self.draw_detection_radius(surface)  # Draw detection radius       
         else:
             self.onSurnud = True
+
+    def draw_sword_slashing(self, surface):
+        # Draw current sword slashing image
+        surface.blit(self.sword_slash_images[self.current_slash_index], (self.target.getPosX() - self.sword_slash_images[self.current_slash_index].get_width() / 2, self.target.getPosY() - self.sword_slash_images[self.current_slash_index].get_height() / 2))
 
     def draw_dot(self, surface):
         pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)
