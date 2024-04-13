@@ -23,6 +23,9 @@ class Zombie(pygame.sprite.Sprite):
         self.dot_radius = 2
         self.dot_color = (0, 255, 0)  # Green color for the dot
 
+    def getHP(self):
+        return self.hp
+    
     def getPos(self):
         return (self.x, self.y)
     
