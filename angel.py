@@ -61,7 +61,16 @@ class Angel(pygame.sprite.Sprite):
             self.remaining_steps = random.randint(30, 60)  # Random steps in one direction
 
         speedVector = (self.walking_direction[0] * self.slow_speed, self.walking_direction[1] * self.slow_speed)
-        self.setPos(self.x + speedVector[0], self.y + speedVector[1])
+        new_x = self.x + speedVector[0]
+        new_y = self.y + speedVector[1]
+
+        # Check boundaries
+        if new_x < 0 or new_x > 1280:
+            self.walking_direction = (-self.walking_direction[0], self.walking_direction[1])  # Reverse x direction
+        if new_y < 0 or new_y > 720:
+            self.walking_direction = (self.walking_direction[0], -self.walking_direction[1])  # Reverse y direction
+
+        self.setPos(max(0, min(new_x, 1280)), max(0, min(new_y, 720)))
 
         self.remaining_steps -= 1
         if self.remaining_steps <= 0:
@@ -75,17 +84,22 @@ class Angel(pygame.sprite.Sprite):
             self.target = random.choice(nearby_zombies)
             self.walking = True
 
+
     def update(self, surface, zombieList):
         if self.walking and self.target != None:
-            targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
-            distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-            if distance <= self.kiirus:
-                self.walking = False
-                self.attacking = True
-                self.attackMode(zombieList)
+            if self.target.getHP() <= 0:
+                self.aimless_walking(zombieList)
             else:
-                speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
-                self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+                targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
+                distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
+                if distance <= self.kiirus:
+                    self.walking = False
+                    self.attacking = True
+                    self.attackMode(zombieList)
+                else:
+                    speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
+                    self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+
         elif self.attacking:
             self.attackMode(zombieList)
         else:
