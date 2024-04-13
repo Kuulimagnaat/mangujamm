@@ -26,6 +26,7 @@ mouse = pygame.mouse
 mixer = pygame.mixer_music
 running = True
 game_over = False
+game_won = False
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
@@ -152,6 +153,7 @@ def init():
     mangija = Mangija.Mangija(0,0,5)
     timePassedFromZombie, timePassedFromAngel, timePassedFromSummon = 0, 0, 0
     game_over=False
+    game_won = False
     vignette_alpha
 
 while running:
@@ -202,7 +204,7 @@ while running:
 
 
     for event in events:
-        if not game_over:
+        if not game_over and not game_won:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mixer.load("./assets/pistolShot.mp3")
@@ -226,7 +228,7 @@ while running:
                 angel.Stunned = False
     
     keys = pygame.key.get_pressed()
-    if not game_over:
+    if not game_over and not game_won:
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             mangija.asukx=clamp(mangija.asukx-mangija.kiirus, 0, 1280)
             mangija.asukx-= mangija.kiirus
@@ -318,7 +320,7 @@ while running:
             angels.remove(angel)
 
     # Progress bar
-    if summonProgress>=0:
+    if summonProgress>=0 and not game_won:
         progressBarPos = (1050,30)
         progressBarWidth, progressBarHeight = 200, 80
         progressBarBackground = pygame.Rect(progressBarPos, (progressBarWidth, progressBarHeight))
@@ -342,6 +344,7 @@ while running:
                 if backToMainMenuButton.isOver(event.pos):
                     mainMenu = True
                     game_over = False
+                    game_won = False
                     init()
 
     # Draw vignette image if game is over
@@ -356,7 +359,7 @@ while running:
         backToMainMenuButton.draw(screen)
     
     #Game end logic
-    if mangija.elud <= 0 and not game_over:
+    if mangija.elud <= 0 and not game_over and not game_won:
         game_over = True
         currentFriendKills = mangija.zombieKills
         chosen_quote = random.choice(game_over_quotes)
@@ -364,6 +367,19 @@ while running:
         # Disable player controls
         keys = pygame.key.get_pressed()  # Clear the key state
 
+    #Game victory
+    # Check if victory condition is met
+    if summonProgress >= 2 or game_won:
+        game_won = True
+        mangija.elud = 0 #to avoid attacks
+        # Display victory screen
+        screen.fill((0, 0, 0))  # Fill the screen with black
+        victory_text = game_over_font.render("Saatan on saabunud", True, (255, 255, 255))  # Render victory text
+        text_rect = victory_text.get_rect(center=(640, 360))  # Center the text on the screen
+        screen.blit(victory_text, text_rect)  # Blit the victory text onto the screen
+
+        # Draw a button to return to the main menu
+        backToMainMenuButton.draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
