@@ -48,6 +48,4 @@ class Zombie(pygame.sprite.Sprite):
 
         
     def KasKuulKattub(self, kuul):
-        pass    
-        
-        
+        pass
