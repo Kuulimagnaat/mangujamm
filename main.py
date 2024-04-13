@@ -198,7 +198,8 @@ while running:
                         paused = False
                         mainMenu = True
                         mixer.load("./assets/loadAndChamber.mp3")
-
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                paused=False
         pygame.display.flip()
         clock.tick(60)
         continue
