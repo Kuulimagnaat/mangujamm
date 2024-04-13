@@ -18,6 +18,7 @@ pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 30)
 
 screen = pygame.display.set_mode((1280, 720))
+pygame.display.set_caption("DemonSUMMON")
 
 
 clock = pygame.time.Clock()
@@ -47,9 +48,16 @@ maxAngels = 10
 
 mangija = Mangija.Mangija(0,0,5)
 
+paused = False
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
+
+    if paused:
+        menuWidth = 1000
+        pygame.draw.rect(screen, (125,125,125), pygame.Rect((1280)))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
