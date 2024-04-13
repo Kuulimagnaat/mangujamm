@@ -35,6 +35,7 @@ angels = []
 mixer.load("./assets/loadAndChamber.mp3")
 
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
+backgroundImage = pygame.image.load("./assets/background.png")
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -164,7 +165,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    screen.fill("purple")
+    screen.blit(backgroundImage, (0,0))
 
     if mainMenu or paused:
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
@@ -231,7 +232,6 @@ while running:
     if not game_over and not game_won:
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             mangija.asukx=clamp(mangija.asukx-mangija.kiirus, 0, 1280)
-            mangija.asukx-= mangija.kiirus
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             mangija.asukx=clamp(mangija.asukx+mangija.kiirus, 0, 1280)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
