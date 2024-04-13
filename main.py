@@ -24,6 +24,7 @@ pygame.display.set_caption("DemonSUMMON")
 clock = pygame.time.Clock()
 mouse = pygame.mouse
 running = True
+game_over = False
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
 
@@ -31,6 +32,52 @@ zombies = [spawnZombie(pentaGramPoints)]
 angels = []
 
 pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
+
+vignette_alpha = 0
+vignette_speed = 2
+vignette_color = (0, 0, 0)
+
+# Load the vignette image
+vignette_image = pygame.image.load("./assets/vignette.jpg")
+vignette_image = pygame.transform.scale(vignette_image, (1280, 720))
+vignette_image.set_alpha(vignette_alpha)  # Set initial alpha value
+
+game_over_font = pygame.font.Font("./assets/demon_panic.otf", 36)
+stats_font = pygame.font.Font("./assets/demon_panic.otf", 24)
+
+game_over_quotes = [
+    "In the end, darkness consumes all.",
+    "Lost in the shadows, a forgotten soul.",
+    "The abyss beckons, claiming another.",
+    "Whispers of despair echo in the void.",
+    "Beyond the veil lies only oblivion.",
+    "Fate's cruel embrace, eternal and cold.",
+    "Gone, but not forgotten. Remembered in darkness.",
+    "Silent screams in the night, fading into nothingness.",
+    "Embrace the darkness, for it is your companion.",
+    "In the depths of despair, find solace in the void."
+]
+
+# Function to draw Game Over text on the screen
+def draw_game_over_text(screen, chosen_quote, mangija):
+    game_over_text = game_over_font.render(chosen_quote, True, (255, 0, 0))
+    shadow_text = game_over_font.render(chosen_quote, True, (0,0,0))
+    text_rect = game_over_text.get_rect(center=(640, 360))  # Center the text on the screen
+    shadow_offset = (5, 5)
+    shadow_rect = shadow_text.get_rect(center=(640 + shadow_offset[0], 360 + shadow_offset[1]))
+    screen.blit(shadow_text, shadow_rect)
+    screen.blit(game_over_text, text_rect)
+
+    stats_text = f"Zombies Killed: {mangija.zombieKills} | Angels Killed: {mangija.angelKills}"
+    shadow_text = stats_font.render(stats_text, True, (0,0,0))
+    stats_rendered = stats_font.render(stats_text, True, (255, 0, 0))
+
+    shadow_offset = (5, 5)
+    shadow_rect = shadow_text.get_rect(center=(640 + shadow_offset[0], 200 + shadow_offset[1]))
+    stats_rect = stats_rendered.get_rect(center=(640, 200))
+    
+    screen.blit(shadow_text, shadow_rect)
+    screen.blit(stats_rendered, stats_rect)
 
 summonProgress = 0
 summonSpeed = 2
@@ -45,7 +92,6 @@ angelSpawnTimer = 3
 timePassedFromAngel = 0
 maxAngels = 10
 
-
 mangija = Mangija.Mangija(0,0,5)
 
 paused = False
@@ -59,6 +105,15 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
+
+# Add these variables to your code
+blood_pool_radius = 0
+blood_pool_max_radius = 60
+blood_pool_color = (255, 0, 0, 100)  # Semi-transparent red color for blood pool
+
+vignette_alpha = 0  # Initial alpha value for vignette
+vignette_speed = 2  # Speed at which the vignette appears
+vignette_color = (0, 0, 0)  # Black color for vignette
 
 def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie
@@ -111,19 +166,20 @@ while running:
         continue
 
     for event in events:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                mangija.TekitaMuzzleFlash(5)
-                TegeleTulistamisega(mangija, zombies, angels)
-            elif event.button == 3:
-                paused = True
-            elif event.button == 2:
-                print("angels on screen: ", len(angels))
-                print("angels killed: ", mangija.angelKills)
-                print("zombies on screen: ", len(zombies))
-                print("zombies killed: ", mangija.zombieKills)
-                print("Damage done to angels: ", mangija.damageDone)
-            print("Tulistati!")
+        if not game_over:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    mangija.TekitaMuzzleFlash(5)
+                    TegeleTulistamisega(mangija, zombies, angels)
+                elif event.button == 3:
+                    paused = True
+                elif event.button == 2:
+                    print("angels on screen: ", len(angels))
+                    print("angels killed: ", mangija.angelKills)
+                    print("zombies on screen: ", len(zombies))
+                    print("zombies killed: ", mangija.zombieKills)
+                    print("Damage done to angels: ", mangija.damageDone)
+                #print("Tulistati!")
 
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
@@ -131,21 +187,21 @@ while running:
                 angel.Stunned = False
     
     keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        mangija.asukx-= mangija.kiirus
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        mangija.asukx+=mangija.kiirus
-    if keys[pygame.K_UP] or keys[pygame.K_w]:
-        mangija.asuky-=mangija.kiirus
-    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        mangija.asuky+=mangija.kiirus
-    if keys[pygame.K_f]:
-        # Iterate over angels and stun those targeting the player
-        for angel in angels:
-            if angel.target == mangija:
-                angel.Stunned = True
-                pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
+    if not game_over:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            mangija.asukx-= mangija.kiirus
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            mangija.asukx+=mangija.kiirus
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            mangija.asuky-=mangija.kiirus
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            mangija.asuky+=mangija.kiirus
+        if keys[pygame.K_f]:
+            # Iterate over angels and stun those targeting the player
+            for angel in angels:
+                if angel.target == mangija:
+                    angel.Stunned = True
+                    pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
 
     # fill the screen with a color to wipe away anything from last frame
 
@@ -168,6 +224,12 @@ while running:
             angels.append(spawnAngel(zombies))
             timePassedFromAngel=0
 
+    #Game over blood display
+    if game_over:
+        # Animate blood pool
+        if blood_pool_radius < blood_pool_max_radius:
+            blood_pool_radius += 5  # Increase blood pool radius gradually
+        pygame.draw.circle(screen, blood_pool_color, (mangija.asukx, mangija.asuky), blood_pool_radius)
 
     mangija.Varskenda()
     mangija.Joonista(screen)
@@ -218,6 +280,27 @@ while running:
         text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
+
+    # Update vignette alpha if game is over
+    if game_over and vignette_alpha < 200:
+        vignette_alpha = min(200, vignette_alpha + vignette_speed)
+
+    # Draw vignette image if game is over
+    if game_over:
+        # Set the alpha value for the image
+        vignette_image.set_alpha(vignette_alpha)
+        
+        # Blit the vignette image onto the screen
+        screen.blit(vignette_image, (0, 0))  # Adjust position if needed
+        draw_game_over_text(screen, chosen_quote, mangija)
+    
+    #Game end logic
+    if mangija.elud <= 0 and not game_over:
+        game_over = True
+        chosen_quote = random.choice(game_over_quotes)
+        
+        # Disable player controls
+        keys = pygame.key.get_pressed()  # Clear the key state
 
     # RENDER YOUR GAME HERE
 
