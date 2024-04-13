@@ -72,8 +72,8 @@ while running:
 
     if len(zombies) != 6:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-    #if len(angles) == 0:
-        #angles.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
+    if len(angles) == 0:
+        angles.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
         
     if angelMade == False:
         angelMade = True
