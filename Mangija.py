@@ -18,6 +18,8 @@ class Mangija:
         self.suund = [1.0,0.0]
         self.damage = 10
 
+        self.pihtaSaamisRaadius = 75
+
         # Health bar parameters
         self.health_bar_length = self.suurus[0]
         self.health_bar_height = 5

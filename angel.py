@@ -22,10 +22,11 @@ class Angel(pygame.sprite.Sprite):
         self.attacking = False
 
         self.onSurnud = False
+        self.Stunned = False
 
         self.damage = 10
         self.pihtaSaamisRaadius = 50
-        self.detection_radius = 200  # Detection radius for the angel
+        self.detection_radius = 250  # Detection radius for the angel
         
         self.last_attack_time = 0
         self.attack_delay = 1000
@@ -68,10 +69,10 @@ class Angel(pygame.sprite.Sprite):
     def draw(self, surface):
         if self.attacking:
             color = (255, 0, 0)  # Red when attacking
+        elif self.target == None or self.Stunned:
+            color = (255, 255, 0)  # Yellow when aimlessly walking
         elif self.target != None:
             color = (255, 255, 255)  # White when following target
-        else:
-            color = (255, 255, 0)  # Yellow when aimlessly walking
         self.image.fill(color)
         surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
@@ -107,7 +108,7 @@ class Angel(pygame.sprite.Sprite):
 
 
     def update(self, surface, zombieList, mangija=Mangija):
-        if (self.hp > 0):
+        if (not self.Stunned and self.hp > 0):
             if self.walking and self.target != None:
                 #Detect bullets
                 self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
@@ -119,7 +120,7 @@ class Angel(pygame.sprite.Sprite):
                 else:
                     targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
                     distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
-                    if distance <= self.kiirus:
+                    if distance <= self.target.pihtaSaamisRaadius:
                         self.walking = False
                         self.attacking = True
                         self.attackMode(zombieList, mangija)
@@ -136,6 +137,17 @@ class Angel(pygame.sprite.Sprite):
             self.draw_health_bar(surface)
             self.draw_dot(surface)
             self.draw_detection_radius(surface)  # Draw detection radius
+
+        elif self.Stunned == True:
+            self.target = None
+            self.attacking = False
+            self.walking = True
+            self.aimless_walking(zombieList, mangija)
+
+            self.draw(surface)   
+            self.draw_health_bar(surface)
+            self.draw_dot(surface)
+            self.draw_detection_radius(surface)  # Draw detection radius       
         else:
             self.onSurnud = True
 
