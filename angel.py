@@ -8,7 +8,7 @@ class Angel(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill((255,255,255))
+        self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -17,35 +17,75 @@ class Angel(pygame.sprite.Sprite):
         self.kiirus = 4
         self.walking = True
         self.pihtaSaamisRaadius = 50
+
         
+        self.last_attack_time = 0
+        self.attack_delay = 1000
 
     def getPos(self):
         return (self.x, self.y)
-    
+
     def getPosX(self):
         return self.getPos()[0]
+
     def getPosY(self):
         return self.getPos()[1]
-    
+
     def setPos(self, givenX, givenY):
         self.x = givenX
         self.y = givenY
 
     def draw(self, surface):
-        surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
-    
+        surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
+
     def update(self, surface):
         if self.walking:
-            targetVector = (self.target[0]-self.x, self.target[1]-self.y)
-            distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
+            target_x, target_y = self.target.getPos()
+            zombie_width, zombie_height = 50, 50
+            center_distance_x = (target_x + zombie_width / 2) - self.x
+            center_distance_y = (target_y + zombie_height / 2) - self.y
+            distance = linalg.norm([center_distance_x, center_distance_y])
+
             if distance <= self.kiirus:
-                self.setPos(self.target[0], self.target[1])
+                angle = pygame.math.Vector2(center_distance_x, center_distance_y).angle_to((1, 0))
+                adjusted_distance = max(distance - self.kiirus, 0)
+                target_x_adjusted = target_x + zombie_width / 2 + (adjusted_distance + self.width) * math.cos(math.radians(angle))
+                target_y_adjusted = target_y + zombie_height / 2 + (adjusted_distance + self.height) * math.sin(math.radians(angle))
+                self.setPos(target_x_adjusted, target_y_adjusted)
+
+                if pygame.time.get_ticks() - self.last_attack_time >= self.attack_delay:
+                    self.attackMode()
+                    self.last_attack_time = pygame.time.get_ticks()
                 self.walking = False
             else:
-                speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
-                self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+                speedVector = (center_distance_x / distance * self.kiirus, center_distance_y / distance * self.kiirus)
+                self.setPos(self.x + speedVector[0], self.y + speedVector[1])
+
+        else:
+            self.attackMode()
         self.draw(surface)
-                
+
+
+    def attackMode(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_attack_time >= self.attack_delay:
+            target_x, target_y = self.target.getPos()
+            zombie_width, zombie_height = 50, 50
+            teleport_distance = 50
+
+            angel_to_zombie_vector = pygame.math.Vector2(target_x - self.x, target_y - self.y)
+            
+            perpendicular_vector = angel_to_zombie_vector.rotate(45)
+            perpendicular_vector.scale_to_length(teleport_distance)
+
+            teleport_point = (target_x + zombie_width / 2 + perpendicular_vector.x,
+                            target_y + zombie_height / 2 + perpendicular_vector.y)
+
+            self.setPos(*teleport_point)
+
+            self.last_attack_time = current_time
+
+
 
     def KasSaabPihta(self, asuk, suund):
         # Ingli asukoht
