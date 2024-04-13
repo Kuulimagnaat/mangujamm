@@ -1,5 +1,6 @@
 import pygame
 from numpy import linalg, cross
+import random
 
 from Mangija import Mangija
 
@@ -7,10 +8,10 @@ class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y, target=(0,0)):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
-        self.image = pygame.Surface([self.width, self.height])
+        self.algimage = pygame.image.load(random.choice(["./assets/zombie1.png"]))
+        self.image = pygame.transform.scale(self.algimage.copy(), (self.width, self.height))
         #self.image = 
         self.algvärv = (255, 0,0)
-        self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.hp = 30
@@ -44,12 +45,19 @@ class Zombie(pygame.sprite.Sprite):
         return self.getPos()[1]
     
     def setPos(self, givenX, givenY):
+        if self.x > givenX:
+            self.image = pygame.transform.flip(self.algimage, flip_x=True, flip_y=False)
+            self.image = pygame.transform.scale(self.image, (self.width,self.height))
+        else:
+            self.image = self.algimage
+            self.image = pygame.transform.scale(self.image, (self.width,self.height))
+
         self.x = givenX
         self.y = givenY
 
     def draw(self, surface):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
-        pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
+        #pygame.draw.circle(surface, (100,0,0), [self.x, self.y], self.pihtaSaamisRaadius)
 
     def draw_health_bar(self, surface):
         # Calculate health bar position
@@ -80,11 +88,6 @@ class Zombie(pygame.sprite.Sprite):
                     speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                     self.setPos(self.x+speedVector[0], self.y+speedVector[1])
            
-            saiPihta = self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
-            if saiPihta == True:
-                self.image.fill((200, 100, 100))
-            else:
-                self.image.fill(self.algvärv)
                 
             self.draw(surface)
             self.draw_health_bar(surface)
