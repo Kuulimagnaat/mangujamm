@@ -1,22 +1,22 @@
 import pygame
+from zombie import Zombie
 from numpy import linalg, cross
 
-class Zombie(pygame.sprite.Sprite):
-    def __init__(self, x, y, target=(0,0)):
+class Angel(pygame.sprite.Sprite):
+    def __init__(self, x, y, target=Zombie):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill((255,0,0))
+        self.image.fill((255,255,255))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.hp = 30
+        self.hp = 100
         self.target = target
-        self.kiirus = 2
+        self.kiirus = 4
         self.walking = True
         self.pihtaSaamisRaadius = 50
         
-
 
     def getPos(self):
         return (self.x, self.y)
@@ -47,7 +47,7 @@ class Zombie(pygame.sprite.Sprite):
                 
 
     def KasSaabPihta(self, asuk, suund):
-        # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuju mangija osutab, mitte tema selja taga.
+        # Vaja on lisada kontroll, et kas zombi on ikka sirgele l�hedal seal suunas, kuju m�ngija osutab, mitte tema selja taga.
         vahevek = [self.x - asuk[0], self.y - asuk[1]]
         sihivek = suund
         vekkorr = cross(vahevek, sihivek)
@@ -62,4 +62,6 @@ class Zombie(pygame.sprite.Sprite):
 
         
     def KasKuulKattub(self, kuul):
-        pass
+        pass    
+        
+        
