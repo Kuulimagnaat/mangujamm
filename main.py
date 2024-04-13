@@ -46,7 +46,7 @@ timePassedFromAngel = 0
 maxAngels = 10
 
 
-mangija = Mangija.Mangija(0,0,5)
+mangija = Mangija.Mangija(100,100,5)
 
 paused = False
 mainMenu = True
@@ -115,6 +115,7 @@ while running:
             if event.button == 1:
                 mangija.TekitaMuzzleFlash(5)
                 TegeleTulistamisega(mangija, zombies, angels)
+                mangija.SaaTagasilööki(30,2.5)
             elif event.button == 3:
                 paused = True
             elif event.button == 2:
@@ -123,7 +124,7 @@ while running:
                 print("zombies on screen: ", len(zombies))
                 print("zombies killed: ", mangija.zombieKills)
                 print("Damage done to angels: ", mangija.damageDone)
-
+                
         # Check if the timer event is triggered
         if event.type == pygame.USEREVENT + 3:
             for angel in angels:
@@ -218,7 +219,6 @@ while running:
         text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
-    
 
     # RENDER YOUR GAME HERE
 
