@@ -11,7 +11,7 @@ class Angel(pygame.sprite.Sprite):
         self.y = y
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
-        self.algimage = pygame.image.load("./assets/ingel.png")
+        self.algimage = pygame.image.load(random.choice(["./assets/ingel1.png", "./assets/ingel2.png"]))
         self.image = self.algimage.copy()
         #self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect()
@@ -31,6 +31,18 @@ class Angel(pygame.sprite.Sprite):
         
         self.last_attack_time = 0
         self.attack_delay = 1000
+
+        self.sword_slash_images = [
+            pygame.image.load("./assets/sword_slash_1.png"),
+            pygame.image.load("./assets/sword_slash_2.png"),
+            pygame.image.load("./assets/sword_slash_3.png"),
+            pygame.image.load("./assets/sword_slash_4.png"),
+            pygame.image.load("./assets/sword_slash_5.png")
+        ]
+        self.current_slash_index = 0
+        self.frame_delay = 5
+        self.slash_duration = 8  # Duration (in frames) for each slash image
+        self.slash_timer = 0
 
         # Dot parameters
         self.dot_radius = 2
@@ -82,6 +94,7 @@ class Angel(pygame.sprite.Sprite):
         elif self.target != None:
             color = (255, 255, 255)  # White when following target
         #self.image.fill(color)
+
         surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def aimless_walking(self, zombieList, mangija):
@@ -147,7 +160,22 @@ class Angel(pygame.sprite.Sprite):
                         self.setPos(self.x+speedVector[0], self.y+speedVector[1])
 
             elif self.attacking:
-                self.attackMode(zombieList, mangija)
+                if self.target.getHP() <= 0 or self.target == None:  # Check if target is dead or None
+                    self.walking = True
+                    self.attacking = False
+                    self.target = None
+                    self.aimless_walking(zombieList, mangija)
+                else:
+                    if self.slash_timer == 0:
+                        self.current_slash_index = random.randint(0, len(self.sword_slash_images) - 1)  # Choose a random slash image
+                    self.slash_timer += 1
+                    if self.slash_timer >= self.slash_duration:
+                        self.slash_timer = 0  # Reset slash timer after finishing the duration
+                        self.current_slash_index = None  # Clear current slash index
+                    elif self.current_slash_index is not None:
+                        if self.slash_timer % self.frame_delay == 0:  # Add a delay between frames
+                            self.draw_sword_slashing(surface)  # Draw current slash image
+                    self.attackMode(zombieList, mangija)
             else:
                 self.aimless_walking(zombieList, mangija)
 
@@ -168,6 +196,10 @@ class Angel(pygame.sprite.Sprite):
             self.draw_detection_radius(surface)  # Draw detection radius       
         else:
             self.onSurnud = True
+
+    def draw_sword_slashing(self, surface):
+        # Draw current sword slashing image
+        surface.blit(self.sword_slash_images[self.current_slash_index], (self.target.getPosX() - self.sword_slash_images[self.current_slash_index].get_width() / 2, self.target.getPosY() - self.sword_slash_images[self.current_slash_index].get_height() / 2))
 
     def draw_dot(self, surface):
         pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)
@@ -216,7 +248,10 @@ class Angel(pygame.sprite.Sprite):
 
         z = [Z[0] - P[0], Z[1] - P[1]]
         # Küsimus, on kui suur on vektori s ja vektori z vaheline koosinus.
-        koosinus = (s[0]*z[0] + s[1]*z[1]) / ((s[0]**2+s[1]**2)**0.5 * (z[0]**2+z[1]**2)**0.5)
+        try:
+            koosinus = (s[0]*z[0] + s[1]*z[1]) / ((s[0]**2+s[1]**2)**0.5 * (z[0]**2+z[1]**2)**0.5)
+        except:
+            koosinus = 0
 
 
         if kaugus < self.pihtaSaamisRaadius and koosinus > 0:

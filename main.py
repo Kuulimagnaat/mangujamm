@@ -125,6 +125,27 @@ vignette_color = (0, 0, 0)  # Black color for vignette
 stun_cooldown_timer = 0
 stun_cooldown_duration = 10
 
+f_ability_box_pos = (50, 50)  # Position of the cooldown box
+f_ability_box_size = (200, 30)  # Size of the cooldown box
+f_ability_ready_color = (255, 0, 0)  # Color when ability is ready
+f_ability_cooldown_color = (0, 255, 0)  # Color when ability is on cooldown
+
+# Function to draw the cooldown bar with the indicator decreasing from right to left
+def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
+    cooldown_progress = max(0, min(1, current_cooldown / max_cooldown))  # Calculate cooldown progress (between 0 and 1)
+    bar_width = int(cooldown_progress * f_ability_box_size[0])  # Calculate width of the filled portion of the bar
+    filled_width = f_ability_box_size[0] - bar_width  # Calculate the width of the filled portion
+    bar_rect = pygame.Rect((f_ability_box_pos[0] + filled_width, f_ability_box_pos[1]), (bar_width, f_ability_box_size[1]))  # Create rectangle for the filled portion
+    remaining_rect = pygame.Rect(f_ability_box_pos, (filled_width, f_ability_box_size[1]))  # Create rectangle for the remaining portion
+    pygame.draw.rect(screen, f_ability_ready_color, bar_rect)  # Draw the filled portion
+    pygame.draw.rect(screen, f_ability_cooldown_color, remaining_rect)  # Draw the remaining portion
+    
+    # Draw text above the cooldown bar
+    text_surface = stats_font.render("Stun (F)", True, (0, 0, 0))  # Create text surface
+    text_rect = text_surface.get_rect(midtop=(f_ability_box_pos[0] + f_ability_box_size[0] // 2, f_ability_box_pos[1]))  # Position the text
+    screen.blit(text_surface, text_rect)  # Blit the text onto the screen
+
+
 def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
     zombies = [spawnZombie(pentaGramPoints)]
@@ -222,11 +243,12 @@ while running:
                     angel.Stunned = True
                     pygame.time.set_timer(pygame.USEREVENT + 3, 3000)
 
-            stun_cooldown_timer = stun_cooldown_duration * 1000
+            stun_cooldown_timer = stun_cooldown_duration
 
     if stun_cooldown_timer > 0:
-        stun_cooldown_timer -= clock.get_time()
-
+        stun_cooldown_timer -= clock.get_time() / 1000  # Decrease cooldown timer
+        if stun_cooldown_timer <= 0:
+            stun_cooldown_timer = 0  # Ensure timer doesn't go below 0
 
     # fill the screen with a color to wipe away anything from last frame
 
@@ -258,6 +280,9 @@ while running:
 
     mangija.Varskenda()
     mangija.Joonista(screen)
+
+    #Draws the stun cooldown bar
+    draw_cooldown_bar(screen, stun_cooldown_timer, stun_cooldown_duration)
 
     zombiesArrived=0
     for zombie in zombies:
@@ -310,6 +335,15 @@ while running:
     if game_over and vignette_alpha < 200:
         vignette_alpha = min(200, vignette_alpha + vignette_speed)
 
+    # Handle events outside the event loop
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Check if left mouse button is clicked
+                if backToMainMenuButton.isOver(event.pos):
+                    mainMenu = True
+                    game_over = False
+                    init()
+
     # Draw vignette image if game is over
     if game_over:
         # Set the alpha value for the image
@@ -320,13 +354,6 @@ while running:
         draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
 
         backToMainMenuButton.draw(screen)
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Check if left mouse button is clicked
-                    if backToMainMenuButton.isOver(event.pos):
-                        mainMenu = True
-                        game_over = False
-                        init()
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
