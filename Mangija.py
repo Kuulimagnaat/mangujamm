@@ -13,10 +13,14 @@ class Mangija:
     def VotaAsuk(self):
         return self.asukx, self.asuky
     
+    def VotaSuund(self):
+        return self.suund
+    
     def Tulista(self, tegelasteNimek):
         for i in tegelasteNimek:
             i.KasSaabPihta((self.asukx, self.asuky), self.suund)
     
+    # Funktsioon arvutab mängijale uue suuna ja liigutab seda
     def Varskenda(self):
         P = [self.asukx, self.asuky]
         H = pygame.mouse.get_pos()
@@ -24,6 +28,7 @@ class Mangija:
         # Suunavektori pikkus
         p = (s[0]**2 + s[1]**2)**0.5
         self.suund = [s[0]/p, s[1]/p]
+         
         
     def Joonista(self, pind):
         pygame.draw.rect(pind, (30,30,30), [self.asukx-self.suurus[0]/2, self.asuky-self.suurus[1]/2, self.suurus[0],self.suurus[1]])

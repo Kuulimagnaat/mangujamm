@@ -1,12 +1,14 @@
 import pygame
 from numpy import linalg, cross
 
+from Mangija import Mangija
+
 class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y, target=(0,0)):
         pygame.sprite.Sprite.__init__(self)
         self.width, self.height = 50, 50
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill((255,0,0))
+        self.algVärv = (255, 0,0)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -33,7 +35,7 @@ class Zombie(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, (self.x-self.width/2, self.y-self.height/2))
     
-    def update(self, surface):
+    def update(self, surface, mangija=Mangija):
         if self.walking:
             targetVector = (self.target[0]-self.x, self.target[1]-self.y)
             distance = ((targetVector[0])**2+(targetVector[1])**2)**(1/2)
@@ -43,8 +45,14 @@ class Zombie(pygame.sprite.Sprite):
             else:
                 speedVector = (targetVector[0]/distance*self.kiirus, targetVector[1]/distance*self.kiirus)
                 self.setPos(self.x+speedVector[0], self.y+speedVector[1])
+        
+        saiPihta = self.KasSaabPihta(mangija.VotaAsuk, mangija.VotaSuund)
+        if saiPihta == True:
+            self.image.fill((200, 100, 100))
+        else:
+            self.image.fill(self.algvärv)
+            
         self.draw(surface)
-                
 
     def KasSaabPihta(self, asuk, suund):
         # Vaja on lisada kontroll, et kas zombi on ikka sirgele lahedal seal suunas, kuju mangija osutab, mitte tema selja taga.
