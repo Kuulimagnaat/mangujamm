@@ -15,6 +15,7 @@ def clamp(n, min, max):
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
+mouse = pygame.mouse
 running = True
 
 zombies = []
@@ -23,7 +24,7 @@ summonProgress = 0
 summonSpeed = 2
 timePassedFromSummon = 0
 
-pentaGramPoints = [(100, 100), (500,500), (300, 150)]
+pentaGramPoints = [(100, 100), (500,500), (300, 150), (400, 400), (621,199)]
 
 mangija = Mangija(0,0,5)
 
@@ -33,16 +34,18 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            zombies.remove(random.choice(zombies))
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
-    if len(zombies) == 0:
+    if len(zombies) != 5:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-        zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), zombies[0].target))   
+        
 
-    mangija.Varskenda()
-    mangija.Joonista(screen)
+    #mangija.Varskenda()
+    #mangija.Joonista(screen)
 
     for point in pentaGramPoints:
         pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
@@ -52,19 +55,25 @@ while running:
         newZombiesList = zombies.copy()
         newZombiesList.remove(zombie)
         for zombie2 in newZombiesList:
-            if not zombie2.walking and ((zombie.getPosX()-zombie2.getPosX())**2+(zombie.getPosY()-zombie2.getPosY())**2)**(1/2)<=200:
+            if not zombie2.walking and zombie2.target == zombie.target and ((zombie.getPosX()-zombie2.getPosX())**2+(zombie.getPosY()-zombie2.getPosY())**2)**(1/2)<=100:
                 newTargets = pentaGramPoints.copy()
                 newTargets.remove(zombie2.target)
-                zombies[zombies.index(zombie2)].target = random.choice(newTargets)
-                print("test")
+                zombie.setTarget(random.choice(newTargets))
         zombie.update(screen, mangija)
         if zombie.walking:
             allZombiesArrived=False
-    if allZombiesArrived:
+    if allZombiesArrived and len(zombies)==5:
         if timePassedFromSummon==0:
             timePassedFromSummon=pygame.time.get_ticks()
         elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
             summonProgress=clamp(summonProgress+summonSpeed, 0, 100)
+            print(summonProgress)
+            timePassedFromSummon=0
+    else:
+        if timePassedFromSummon==0:
+            timePassedFromSummon=pygame.time.get_ticks()
+        elif pygame.time.get_ticks()>=timePassedFromSummon+0.5*1000:
+            summonProgress=clamp(summonProgress-summonSpeed, 0, 100)
             print(summonProgress)
             timePassedFromSummon=0
 
