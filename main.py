@@ -54,7 +54,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            #print("Tulistati!")
+            print("Tulistati!")
+            mangija.TekitaMuzzleFlash(5)
             TegeleTulistamisega(mangija, zombies, angels)
             
     
