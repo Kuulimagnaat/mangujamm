@@ -335,6 +335,15 @@ while running:
     if game_over and vignette_alpha < 200:
         vignette_alpha = min(200, vignette_alpha + vignette_speed)
 
+    # Handle events outside the event loop
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Check if left mouse button is clicked
+                if backToMainMenuButton.isOver(event.pos):
+                    mainMenu = True
+                    game_over = False
+                    init()
+
     # Draw vignette image if game is over
     if game_over:
         # Set the alpha value for the image
@@ -345,13 +354,6 @@ while running:
         draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
 
         backToMainMenuButton.draw(screen)
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Check if left mouse button is clicked
-                    if backToMainMenuButton.isOver(event.pos):
-                        mainMenu = True
-                        game_over = False
-                        init()
     
     #Game end logic
     if mangija.elud <= 0 and not game_over:
