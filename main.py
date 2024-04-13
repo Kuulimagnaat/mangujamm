@@ -72,14 +72,9 @@ while running:
 
     if len(zombies) != 6:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-    if len(angles) == 0:
-        angles.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
-        
-    if angelMade == False:
-        angelMade = True
-        x=random.randrange(0, 1280)
-        y=random.randrange(0,720)
-        testAngel = Angel(x, y, zombies[0])
+
+    if len(angels) == 0:
+        angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
 
     mangija.Varskenda()
     mangija.Joonista(screen)
@@ -130,8 +125,8 @@ while running:
         text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
-    #for angel in angles:
-        #angel.update(screen)
+    for angel in angels:
+        angel.update(screen)
 
     
 
