@@ -73,14 +73,9 @@ while running:
 
     if len(zombies) != 5:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
-    #if len(angels) == 0:
-        #angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
-        
-    if angelMade == False:
-        angelMade = True
-        x=random.randrange(0, 1280)
-        y=random.randrange(0,720)
-        testAngel = Angel(x, y, zombies[0])
+    if len(angels) == 0:
+        angels.append(Angel(random.randrange(0, 1280), random.randrange(0,720), zombies[0]))
+    
 
     mangija.Varskenda()
     mangija.Joonista(screen)
@@ -115,6 +110,9 @@ while running:
         elif pygame.time.get_ticks()>=timePassedFromSummon+1.5*1000:
             summonProgress=clamp(summonProgress-summonReductionSpeed, 0, 100)
             timePassedFromSummon=0
+    
+    for angel in angels:
+        angel.update(screen)
 
     # Progress bar
     if summonProgress>=0:
