@@ -20,6 +20,9 @@ class Zombie(pygame.sprite.Sprite):
         self.pihtaSaamisRaadius = 30
         self.onSurnud = False
         
+        # Dot parameters
+        self.dot_radius = 2
+        self.dot_color = (0, 255, 0)
 
         # Health bar parameters
         self.health_bar_length = self.width
@@ -61,6 +64,9 @@ class Zombie(pygame.sprite.Sprite):
         # Draw health bar
         pygame.draw.rect(surface, self.health_bar_color, (health_bar_x, health_bar_y, health_width, self.health_bar_height))
     
+    def draw_dot(self, surface):
+        pygame.draw.circle(surface, self.dot_color, (int(self.x), int(self.y)), self.dot_radius)
+
     # Siia funktiooni on vaja lisada, mis juhtub, kui zombil on elusid vähem kui 0.
     def update(self, surface, mangija=Mangija):
         if (self.hp > 0):
