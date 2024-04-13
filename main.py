@@ -144,7 +144,9 @@ while running:
             timePassedFromSummon=0
     
     for angel in angels:
-        angel.update(screen, zombies)
+        angel.update(screen, zombies, mangija)
+        if angel.onSurnud:
+            angels.remove(angel)
 
     # Progress bar
     if summonProgress>=0:
