@@ -20,6 +20,7 @@ class Angel(pygame.sprite.Sprite):
         self.slow_speed = 2
         self.walking = True
         self.attacking = False
+
         self.damage = 10
         self.pihtaSaamisRaadius = 50
         self.detection_radius = 200  # Detection radius for the angel
@@ -47,7 +48,7 @@ class Angel(pygame.sprite.Sprite):
     def draw(self, surface):
         if self.attacking:
             color = (255, 0, 0)  # Red when attacking
-        elif self.walking and self.target != None:
+        elif self.target != None:
             color = (255, 255, 255)  # White when following target
         else:
             color = (255, 255, 0)  # Yellow when aimlessly walking
@@ -87,7 +88,9 @@ class Angel(pygame.sprite.Sprite):
 
     def update(self, surface, zombieList):
         if self.walking and self.target != None:
-            if self.target.getHP() <= 0:
+            if self.target.getHP() <= 0 or self.target == None:
+                self.walking = True
+                self.target = None
                 self.aimless_walking(zombieList)
             else:
                 targetVector = (self.target.getPosX()-self.x, self.target.getPosY()-self.y)
