@@ -36,6 +36,17 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             zombies.remove(random.choice(zombies))
+    
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        mangija.asukx-= mangija.kiirus
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        mangija.asukx+=mangija.kiirus
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
+        mangija.asuky-=mangija.kiirus
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        mangija.asuky+=mangija.kiirus
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
@@ -44,8 +55,8 @@ while running:
         zombies.append(Zombie(random.randrange(0, 1280), random.randrange(0,720), random.choice(pentaGramPoints)))
         
 
-    #mangija.Varskenda()
-    #mangija.Joonista(screen)
+    mangija.Varskenda()
+    mangija.Joonista(screen)
 
     for point in pentaGramPoints:
         pygame.draw.rect(screen, (255, 165, 0), pygame.Rect((point[0]-50, point[1]-50), (100,100)))
