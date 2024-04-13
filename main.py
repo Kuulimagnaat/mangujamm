@@ -1,10 +1,13 @@
 import pygame
+import zombie
 
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
+
+zombies = []
 
 while running:
     # poll for events
@@ -15,6 +18,9 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
+
+    if len(zombies) == 0:
+        pass
 
     # RENDER YOUR GAME HERE
 
