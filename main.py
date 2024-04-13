@@ -22,7 +22,6 @@ pygame.display.set_caption("DemonSUMMON")
 
 
 clock = pygame.time.Clock()
-mouse = pygame.mouse
 running = True
 
 pentaGramPoints = [(635, 100), (350, 300), (950, 300), (492, 620), (800, 620)]
@@ -50,21 +49,34 @@ mangija = Mangija.Mangija(0,0,5)
 
 paused = False
 
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
-
-    if paused:
-        menuWidth = 1000
-        pygame.draw.rect(screen, (125,125,125), pygame.Rect((1280)))
-
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
+    
+    screen.fill("purple")
+    if paused:
+        menuWidth, menuHeight = 400, 350
+        pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print(event.button)
+        pygame.display.flip()
+        clock.tick(60)
+        continue
+
+    for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print("Tulistati!")
-            TegeleTulistamisega(mangija, zombies, angels)
-            
+            if event.button == 1:
+                print("Tulistati!")
+                TegeleTulistamisega(mangija, zombies, angels)
+            elif event.button == 3:
+                paused = True
+    
     
     keys = pygame.key.get_pressed()
 
@@ -78,7 +90,6 @@ while running:
         mangija.asuky+=mangija.kiirus
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
 
     #Pentagram
     screen.blit(pentagramImage, ((1280-pentagramImage.get_width())/2,(720-pentagramImage.get_height())/2))
