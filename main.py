@@ -37,6 +37,7 @@ mixer.load("./assets/loadAndChamber.mp3")
 #pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
+forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -169,6 +170,7 @@ while running:
     screen.blit(backgroundImage, (0,0))
 
     if mainMenu or paused:
+        screen.blit(forestImage, (0,0))
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
         exitButton.draw(screen)
 
@@ -285,9 +287,6 @@ while running:
     mangija.Varskenda()
     mangija.Joonista(screen)
 
-    #Draws the stun cooldown bar
-    draw_cooldown_bar(screen, stun_cooldown_timer, stun_cooldown_duration)
-
     zombiesArrived=0
     for zombie in zombies:
         if zombie.onSurnud:
@@ -320,6 +319,12 @@ while running:
         angel.update(screen, zombies, mangija)
         if angel.onSurnud:
             angels.remove(angel)
+
+    # Forest cover
+    screen.blit(forestImage, (0,0))
+
+    #Draws the stun cooldown bar
+    draw_cooldown_bar(screen, stun_cooldown_timer, stun_cooldown_duration)
 
     # Progress bar
     if summonProgress>=0 and not game_won:
