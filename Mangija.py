@@ -9,11 +9,12 @@ def clamp(n, min, max):
     else: 
         return n
 
-class Mangija:
+class Mangija(pygame.sprite.Sprite):
     def __init__(self, asukx, asuky, kiirus):
-        self.suurus = [50,50]
+        pygame.sprite.Sprite.__init__(self)
+        self.suurus = (50,50)
         self.algMangijaPilt = pygame.image.load("./assets/peategelane.png")
-        self.mangijaPilt = pygame.transform.scale(self.algMangijaPilt.copy(), self.suurus)
+        self.mangijaPilt = pygame.transform.scale(self.algMangijaPilt, self.suurus)
         self.muzzlefPilt = pygame.image.load("./assets/Muzzle flash.png")
         self.muzzlefRect = self.muzzlefPilt.get_rect()
         self.tagasilöögiKiirus = [0,0]
@@ -24,7 +25,6 @@ class Mangija:
         self.asuky = asuky
         self.kiirus = 5
         self.elud = 100
-        self.suurus = [30,30]
         # Suund olgu alati �hikvektor
         self.suund = [1.0,0.0]
         self.damage = 10
@@ -113,14 +113,14 @@ class Mangija:
          
         
     def Joonista(self, pind):
-        pind.blit(self.algMangijaPilt, (-self.suurus[0]/2, -self.suurus[1]/2, self.suurus[0], self.suurus[1]))
+        pind.blit(self.mangijaPilt, (self.asukx-self.suurus[0]/2, self.asuky-self.suurus[1]/2, self.suurus[0], self.suurus[1]))
         #pygame.draw.rect(pind, (30,30,30), [self.asukx-self.suurus[0]/2, self.asuky-self.suurus[1]/2, self.suurus[0],self.suurus[1]])
         P = [self.asukx, self.asuky]
         s = self.suund
         suunaOts = [P[0] + s[0]*50, P[1] + s[1]*50]
         pygame.draw.line(pind, (255,255,255), P, suunaOts)
 
-        self.draw_health_bar(pind)    
+        self.draw_health_bar(pind)
         if self.muzzleFlashCounter > 0:
             #self.muzzlefRect.
             rot_image = pygame.transform.scale(self.muzzlefPilt, (350,700))
