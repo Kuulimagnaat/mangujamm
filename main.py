@@ -38,7 +38,8 @@ mixer.load("./assets/loadAndChamber.mp3")
 backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
-angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
+#angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
+angelImage = pygame.transform.scale_by(pygame.image.load("./assets/ingel1.png").convert_alpha(), 7)
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -89,25 +90,29 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(stats_rendered, stats_rect)
 
 def dialogScene(scene, n):
-    screen.blit(angelImage, (0, 400))
+    screen.blit(angelImage, (25, 480))
     match n:
         case 1:
             pass
 
 
 summonProgress = 0
-summonSpeed = 2
+summonSpeed = 5
 summonReductionSpeed = 1
 timePassedFromSummon = 0
 
 zombieSpawnTimer = 5
 timePassedFromZombie = 0
-maxZombies = 6
+maxZombies = 7
 
 angelSpawnTimer = 3
 timePassedFromAngel = 0
 maxAngels = 10
 
+waveCooldown = 16
+timePassedFromWave = 0
+
+waves = [2]
 
 mangija = Mangija.Mangija(100,100,5)
 
@@ -127,7 +132,7 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
 
 #Dialog scene button
-nextButton = Button(1280-100, 720-100, 200, 100, "Next")
+nextButton = Button(1280-250, 720-150, 200, 100, "Next")
 
 # Add these variables to your code
 blood_pool_radius = 0
@@ -164,7 +169,7 @@ def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
 def draw_ingame_stats(screen, x, y):
     pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (400, 100)))
     angelsKilledText = stats_font.render(f"Angels killed: {mangija.angelKills}", False, (255, 255, 255))
-    murderedFriends = stats_font.render(f"Murdered friends: {mangija.zombieKills}", False, (255, 255, 255))
+    murderedFriends = stats_font.render(f"Friends murdered: {mangija.zombieKills}", False, (255, 255, 255))
     screen.blit(angelsKilledText, (x+25, y+25))
     screen.blit(murderedFriends, (x+25, y+55))
 
@@ -262,6 +267,7 @@ while running:
                     print("zombies on screen: ", len(zombies))
                     print("zombies killed: ", mangija.zombieKills)
                     print("Damage done to angels: ", mangija.damageDone)
+                    print(dialogCounter)
                 #print("Tulistati!")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 paused=True
@@ -315,6 +321,16 @@ while running:
         elif pygame.time.get_ticks() >= timePassedFromAngel + angelSpawnTimer*1000:
             angels.append(spawnAngel(zombies))
             timePassedFromAngel=0
+        
+        if timePassedFromWave == 0:
+            timePassedFromWave = pygame.time.get_ticks()
+        elif pygame.time.get_ticks() >= timePassedFromWave + waveCooldown*1000:
+            wave = random.choice(waves)
+            if len(angels)+wave>maxAngels:
+                angels.extend(spawnAngel(zombies, maxAngels-len(angels)))
+            else:
+                angels.extend(spawnAngel(zombies, wave))
+            timePassedFromWave = 0
 
     #Game over blood display
     if game_over:
