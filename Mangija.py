@@ -11,8 +11,9 @@ def clamp(n, min, max):
 
 class Mangija:
     def __init__(self, asukx, asuky, kiirus):
-        self.suurus = [30,30]
-        self.mangijaPilt = pygame.Surface((self.suurus[0], self.suurus[1]))
+        self.suurus = [50,50]
+        self.algMangijaPilt = pygame.image.load("./assets/peategelane.png")
+        self.mangijaPilt = pygame.transform.scale(self.algMangijaPilt.copy(), self.suurus)
         self.muzzlefPilt = pygame.image.load("./assets/Muzzle flash.png")
         self.muzzlefRect = self.muzzlefPilt.get_rect()
         self.tagasilöögiKiirus = [0,0]
@@ -104,10 +105,16 @@ class Mangija:
         # Suunavektori pikkus
         p = (s[0]**2 + s[1]**2)**0.5
         self.suund = [s[0]/p, s[1]/p]
+        
+        self.mangijaPilt = pygame.transform.scale(self.algMangijaPilt, self.suurus)
+        nurk = self.VotaSihinurk()
+        if nurk > 90 and nurk < 270:
+            self.mangijaPilt = pygame.transform.flip(self.mangijaPilt, True, False)
          
         
     def Joonista(self, pind):
-        pygame.draw.rect(pind, (30,30,30), [self.asukx-self.suurus[0]/2, self.asuky-self.suurus[1]/2, self.suurus[0],self.suurus[1]])
+        pind.blit(self.algMangijaPilt, (-self.suurus[0]/2, -self.suurus[1]/2, self.suurus[0], self.suurus[1]))
+        #pygame.draw.rect(pind, (30,30,30), [self.asukx-self.suurus[0]/2, self.asuky-self.suurus[1]/2, self.suurus[0],self.suurus[1]])
         P = [self.asukx, self.asuky]
         s = self.suund
         suunaOts = [P[0] + s[0]*50, P[1] + s[1]*50]
