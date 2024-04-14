@@ -91,9 +91,8 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
 
 def dialogScene(scene, n):
     screen.blit(angelImage, (25, 480))
-    match n:
-        case 1:
-            pass
+    if n == 1:
+        pass
 
 
 summonProgress = 0
