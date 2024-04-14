@@ -108,8 +108,9 @@ class Mangija(pygame.sprite.Sprite):
         
         self.mangijaPilt = pygame.transform.scale(self.algMangijaPilt, self.suurus)
         nurk = self.VotaSihinurk()
-        if nurk > 90 and nurk < 270:
-            self.mangijaPilt = pygame.transform.flip(self.mangijaPilt, True, False)
+        if nurk < 0 and nurk > -180:
+            a = pygame.transform.scale(self.algMangijaPilt, self.suurus)
+            self.mangijaPilt = pygame.transform.flip(a, True, False)
          
         
     def Joonista(self, pind):

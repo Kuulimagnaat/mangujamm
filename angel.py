@@ -144,7 +144,7 @@ class Angel(pygame.sprite.Sprite):
 
             self.draw(surface)
             self.draw_health_bar(surface)
-            surface.blit(font.render("STUNNED", False, (255, 255, 255)), (self.x-45, self.y+20))
+            surface.blit(font.render("JUHM", False, (255, 255, 255)), (self.x-45, self.y+20))
             self.draw_dot(surface)
             self.draw_detection_radius(surface)  # Draw detection radius  
         elif (not self.Stunned and self.hp > 0):
