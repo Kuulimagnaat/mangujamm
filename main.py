@@ -220,8 +220,7 @@ gunShotSound = mixer2.Sound("./assets/pistolShot.mp3")
 
 #Have to credit audionautix.com
 #Muusika
-music = ["./assets/Marauder.mp3",
-         "./assets/EnergyBed2.mp3",
+music = ["./assets/EnergyBed2.mp3",
          "./assets/Pentagram.mp3"]
 musicQueue = music.copy()
 choice = random.choice(music)
@@ -330,7 +329,6 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if startButton.isOver(mouse.get_pos()):
-                        enterSound.play()
                         mainMenu = False
                         init()
                         dialogActivated = True
@@ -367,6 +365,7 @@ while running:
                         if dialogCounter >= 7:
                             dialogActivated = False
                             dialogCounter = 1
+                            enterSound.play()
                         else:
                             dialogCounter += 1
         pygame.display.flip()
