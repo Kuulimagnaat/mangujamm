@@ -16,7 +16,7 @@ def clamp(n, min, max):
 pygame.init()
 pygame.font.init()
 
-my_font = pygame.font.SysFont('Comic Sans MS', 30)
+my_font = pygame.font.Font("./assets/demon_panic.otf", 30)
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("DemonSUMMON")
@@ -38,6 +38,8 @@ mixer.load("./assets/loadAndChamber.mp3")
 backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
+#angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
+angelImage = pygame.transform.scale_by(pygame.image.load("./assets/ingel1.png").convert_alpha(), 7)
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -87,25 +89,38 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(stats_rendered, stats_rect)
 
+def dialogScene(scene, n):
+    screen.blit(angelImage, (25, 480))
+    match n:
+        case 1:
+            pass
+
 
 summonProgress = 0
-summonSpeed = 2
+summonSpeed = 5
 summonReductionSpeed = 1
 timePassedFromSummon = 0
 
 zombieSpawnTimer = 5
 timePassedFromZombie = 0
-maxZombies = 6
+maxZombies = 7
 
 angelSpawnTimer = 3
 timePassedFromAngel = 0
 maxAngels = 10
 
+waveCooldown = 16
+timePassedFromWave = 0
+
+waves = [2]
 
 mangija = Mangija.Mangija(100,100,5)
 
 paused = False
 mainMenu = True
+
+dialogActivated = False
+dialogCounter = 1
 
 menuWidth, menuHeight = 400, 350
 
@@ -115,6 +130,9 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
+
+#Dialog scene button
+nextButton = Button(1280-250, 720-150, 200, 100, "Next")
 
 # Add these variables to your code
 blood_pool_radius = 0
@@ -148,6 +166,15 @@ def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
     text_rect = text_surface.get_rect(midtop=(f_ability_box_pos[0] + f_ability_box_size[0] // 2, f_ability_box_pos[1]))  # Position the text
     screen.blit(text_surface, text_rect)  # Blit the text onto the screen
 
+def draw_ingame_stats(screen, x, y):
+    pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (400, 100)))
+    angelsKilledText = stats_font.render(f"Angels killed: {mangija.angelKills}", False, (255, 255, 255))
+    murderedFriends = stats_font.render(f"Friends murdered: {mangija.zombieKills}", False, (255, 255, 255))
+    screen.blit(angelsKilledText, (x+25, y+25))
+    screen.blit(murderedFriends, (x+25, y+55))
+
+
+    
 
 def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
@@ -183,6 +210,7 @@ while running:
                         mixer.play()
                         mainMenu = False
                         init()
+                        dialogActivated = True
                     elif exitButton.isOver(mouse.get_pos()):
                         running= False
         pygame.display.flip()
@@ -206,6 +234,22 @@ while running:
         clock.tick(60)
         continue
 
+    if dialogActivated:
+        screen.blit(forestImage, (0,0))
+        dialogScene(screen, dialogCounter)
+        nextButton.draw(screen)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if nextButton.isOver(mouse.get_pos()):
+                        if dialogCounter >= 5:
+                            dialogActivated = False
+                            dialogCounter = 1
+                        else:
+                            dialogCounter += 1
+        pygame.display.flip()
+        clock.tick(60)
+        continue
 
 
     for event in events:
@@ -223,6 +267,7 @@ while running:
                     print("zombies on screen: ", len(zombies))
                     print("zombies killed: ", mangija.zombieKills)
                     print("Damage done to angels: ", mangija.damageDone)
+                    print(dialogCounter)
                 #print("Tulistati!")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 paused=True
@@ -276,6 +321,16 @@ while running:
         elif pygame.time.get_ticks() >= timePassedFromAngel + angelSpawnTimer*1000:
             angels.append(spawnAngel(zombies))
             timePassedFromAngel=0
+        
+        if timePassedFromWave == 0:
+            timePassedFromWave = pygame.time.get_ticks()
+        elif pygame.time.get_ticks() >= timePassedFromWave + waveCooldown*1000:
+            wave = random.choice(waves)
+            if len(angels)+wave>maxAngels:
+                angels.extend(spawnAngel(zombies, maxAngels-len(angels)))
+            else:
+                angels.extend(spawnAngel(zombies, wave))
+            timePassedFromWave = 0
 
     #Game over blood display
     if game_over:
@@ -326,6 +381,9 @@ while running:
     #Draws the stun cooldown bar
     draw_cooldown_bar(screen, stun_cooldown_timer, stun_cooldown_duration)
 
+    #On screen stats
+    draw_ingame_stats(screen, 0, 620)
+
     # Progress bar
     if summonProgress>=0 and not game_won:
         progressBarPos = (1050,30)
@@ -348,7 +406,7 @@ while running:
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Check if left mouse button is clicked
-                if backToMainMenuButton.isOver(event.pos) and game_won==True:
+                if backToMainMenuButton.isOver(event.pos) and (game_won or game_over):
                     mainMenu = True
                     game_over = False
                     game_won = False
