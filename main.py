@@ -39,7 +39,7 @@ backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
 #angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
-angelImage = pygame.transform.scale_by(pygame.image.load("./assets/ingel1.png").convert_alpha(), 7)
+angelImage = pygame.transform.scale_by(pygame.image.load("./assets/peategelane.png").convert_alpha(), 7)
 
 vignette_alpha = 0
 vignette_speed = 2

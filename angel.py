@@ -5,6 +5,9 @@ from Mangija import Mangija
 import math
 import random
 
+pygame.font.init()
+font = pygame.font.Font("./assets/demon_panic.otf", 20)
+
 class Angel(pygame.sprite.Sprite):
     def __init__(self, x, y, target):
         self.x = x
@@ -133,7 +136,18 @@ class Angel(pygame.sprite.Sprite):
 
     def update(self, surface, zombieList, mangija=Mangija):
         self.KasSaabPihta(mangija.VotaAsuk(), mangija.VotaSuund())
-        if (not self.Stunned and self.hp > 0):
+        if self.Stunned == True and self.hp > 0:
+            self.target = None
+            self.attacking = False
+            self.walking = True
+            self.aimless_walking(zombieList, mangija)
+
+            self.draw(surface)
+            self.draw_health_bar(surface)
+            surface.blit(font.render("STUNNED", False, (255, 255, 255)), (self.x-45, self.y+20))
+            self.draw_dot(surface)
+            self.draw_detection_radius(surface)  # Draw detection radius  
+        elif (not self.Stunned and self.hp > 0):
             if self.walking and self.target != None:
                 if self.target.getHP() <= 0 or self.target == None:
                     self.walking = True
@@ -183,17 +197,7 @@ class Angel(pygame.sprite.Sprite):
             self.draw_health_bar(surface)
             self.draw_dot(surface)
             self.draw_detection_radius(surface)  # Draw detection radius
-
-        elif self.Stunned == True:
-            self.target = None
-            self.attacking = False
-            self.walking = True
-            self.aimless_walking(zombieList, mangija)
-
-            self.draw(surface)   
-            self.draw_health_bar(surface)
-            self.draw_dot(surface)
-            self.draw_detection_radius(surface)  # Draw detection radius       
+     
         else:
             self.onSurnud = True
 
