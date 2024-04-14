@@ -1,8 +1,6 @@
 ﻿import pygame
-import os
 
-from Klassid.ObjektiAlus import ObjektiAlus
-from Programmiolek import ProgrammiOlek
+from ObjektiAlus import ObjektiAlus
 
 
 # Funktsioon võtab sisse teksti, pikkuse pikslites ja pygame fonti objekti.
@@ -81,10 +79,9 @@ class Tekst(ObjektiAlus):
 
 
 class MitmeReaTekst:
-    def __init__(self, olek:ProgrammiOlek, pind, tekst, pygfont:pygame.font.Font):
+    def __init__(self, pind, tekst, pygfont:pygame.font.Font):
         self.debugnumber = 0        
 
-        self.olek = olek
         self.pind = pind
         self.laius = 100
         self.asukoht = (0,0)

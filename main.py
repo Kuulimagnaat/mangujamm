@@ -4,6 +4,7 @@ from Mangija import Mangija
 from Funktsioonid import *
 from button import *
 from slider import Slider
+import Tekst
 
 def clamp(n, min, max): 
     if n < min: 
@@ -41,8 +42,10 @@ angels = []
 backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
-#angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
-angelImage = pygame.transform.scale_by(pygame.image.load("./assets/peategelane.png").convert_alpha(), 7)
+angelImage = pygame.transform.scale_by(pygame.image.load("./assets/ingel2.png").convert_alpha(), 7)
+tegelaseImage = pygame.transform.scale_by(pygame.image.load("./assets/peategelane.png").convert_alpha(), 7)
+zombiImage = pygame.transform.scale_by(pygame.image.load("./assets/zombie1.png").convert_alpha(), 7)
+textboxImage = pygame.transform.scale_by(pygame.image.load("./assets/textbox.png").convert_alpha(), 2.5)
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -92,10 +95,79 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(stats_rendered, stats_rect)
 
+
+
+
+pygame.font.init()
+pygfont = pygame.font.Font("HANDMEDS.TTF", 40)
+    
+tekst1 = "Tumedad rituaalid on ainus asi, mille nimel ma veel elan."
+t1 = Tekst.MitmeReaTekst(screen, tekst1, pygfont)
+t1.MääraAsukoht((130,600))
+t1.MääraLaius(700)
+
+tekst2 = "Aga ka need muutuvad üksluiseks."
+t2 = Tekst.MitmeReaTekst(screen, tekst2, pygfont)
+t2.MääraAsukoht((130,600))
+t2.MääraLaius(700)
+    
+tekst3 = "Ma olen valmis ülimaks riituseks, mille lõpuks kohtun vanakuradi endaga."
+t3 = Tekst.MitmeReaTekst(screen, tekst3, pygfont)
+t3.MääraAsukoht((130,600))
+t3.MääraLaius(700)
+
+tekst4 = "Pimeduse elukad on minu sõbrad."
+t4 = Tekst.MitmeReaTekst(screen, tekst4, pygfont)
+t4.MääraAsukoht((130,600))
+t4.MääraLaius(700)
+
+tekst5 = "Jumala teenrid üritavad mind takistada. Mu püstol aitab nendega tegeleda.\nF-nupp, mu kaitseloits, ajab nad segadusse."
+t5 = Tekst.MitmeReaTekst(screen, tekst5, pygfont)
+t5.MääraAsukoht((130,600))
+t5.MääraLaius(675)
+
+tekst6 = "Rituaali töötamiseks peavad poolsurnud pentagrammi otstes elus püsima."
+t6 = Tekst.MitmeReaTekst(screen, tekst6, pygfont)
+t6.MääraAsukoht((130,600))
+t6.MääraLaius(590)
+
+tekst7 = "Ma liigun WASD-nuppudega ja tulistan\nhiireklõpsuga."
+t7 = Tekst.MitmeReaTekst(screen, tekst7, pygfont)
+t7.MääraAsukoht((130,600))
+t7.MääraLaius(700)
+
 def dialogScene(scene, n):
-    screen.blit(angelImage, (25, 480))
     if n == 1:
-        pass
+        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(textboxImage, (55,500))
+        t1.Joonista()
+    if n == 2:
+        screen.blit(tegelaseImage, (75, 320))
+        screen.blit(textboxImage, (55,500))
+        t2.Joonista()
+    if n == 3:
+        a = pygame.transform.flip(tegelaseImage, True, False)
+        screen.blit(a, (85, 320))
+        screen.blit(textboxImage, (55,500))
+        t3.Joonista()
+    if n == 4:
+        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(zombiImage, (600, 320))
+        screen.blit(textboxImage, (55,500))
+        t4.Joonista()
+    if n == 5:
+        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(angelImage, (600, 320))
+        screen.blit(textboxImage, (55,500))
+        t5.Joonista()
+    if n == 6:
+        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(textboxImage, (55,500))
+        t6.Joonista()
+    if n == 7:
+        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(textboxImage, (55,500))
+        t7.Joonista()
 
 
 summonProgress = 0
@@ -213,6 +285,10 @@ def init():
     game_won = False
     vignette_alpha
 
+
+
+
+
 while running:
     
     # poll for events
@@ -284,7 +360,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if nextButton.isOver(mouse.get_pos()):
-                        if dialogCounter >= 5:
+                        if dialogCounter >= 7:
                             dialogActivated = False
                             dialogCounter = 1
                         else:
@@ -461,7 +537,7 @@ while running:
         vignette_image.set_alpha(vignette_alpha)
         
         # Blit the vignette image onto the screen
-        screen.blit(vignette_image, (0, 0))  # Adjust position if needed
+        screen.blit(vignette_image, (0, 0))  # Adjust position if neededs
         draw_game_over_text(screen, chosen_quote, mangija, currentFriendKills)
 
         backToMainMenuButton.draw(screen)
@@ -488,6 +564,8 @@ while running:
 
         # Draw a button to return to the main menu
         backToMainMenuButton.draw(screen)
+        
+    #a.Joonista()
 
     # flip() the display to put your work on screen
     pygame.display.flip()
