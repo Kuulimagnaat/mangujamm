@@ -28,7 +28,7 @@ running = True
 game_over = False
 game_won = False
 
-pentaGramPoints = [(650, 150), (350, 300), (950, 300), (492, 620), (800, 620)]
+pentaGramPoints = [(660, 160), (420, 310), (900, 300), (492, 570), (800, 570)]
 
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
