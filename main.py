@@ -16,7 +16,7 @@ def clamp(n, min, max):
 pygame.init()
 pygame.font.init()
 
-my_font = pygame.font.SysFont('Comic Sans MS', 30)
+my_font = pygame.font.Font("./assets/demon_panic.otf", 30)
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("DemonSUMMON")
@@ -38,6 +38,7 @@ mixer.load("./assets/loadAndChamber.mp3")
 backgroundImage = pygame.image.load("./assets/background.png").convert()
 candleImage = pygame.image.load("./assets/candle.png").convert_alpha()
 forestImage = pygame.image.load("./assets/puud.png").convert_alpha()
+angelImage = pygame.image.load("./assets/ingel1.png").convert_alpha()
 
 vignette_alpha = 0
 vignette_speed = 2
@@ -87,6 +88,12 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(stats_rendered, stats_rect)
 
+def dialogScene(scene, n):
+    screen.blit(angelImage, (0, 400))
+    match n:
+        case 1:
+            pass
+
 
 summonProgress = 0
 summonSpeed = 2
@@ -107,6 +114,9 @@ mangija = Mangija.Mangija(100,100,5)
 paused = False
 mainMenu = True
 
+dialogActivated = False
+dialogCounter = 1
+
 menuWidth, menuHeight = 400, 350
 
 # Pause menu
@@ -115,6 +125,9 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
+
+#Dialog scene button
+nextButton = Button(1280-100, 720-100, 200, 100, "Next")
 
 # Add these variables to your code
 blood_pool_radius = 0
@@ -154,6 +167,8 @@ def draw_ingame_stats(screen, x, y):
     murderedFriends = stats_font.render(f"Murdered friends: {mangija.zombieKills}", False, (255, 255, 255))
     screen.blit(angelsKilledText, (x+25, y+25))
     screen.blit(murderedFriends, (x+25, y+55))
+
+
     
 
 def init():
@@ -190,6 +205,7 @@ while running:
                         mixer.play()
                         mainMenu = False
                         init()
+                        dialogActivated = True
                     elif exitButton.isOver(mouse.get_pos()):
                         running= False
         pygame.display.flip()
@@ -213,6 +229,22 @@ while running:
         clock.tick(60)
         continue
 
+    if dialogActivated:
+        screen.blit(forestImage, (0,0))
+        dialogScene(screen, dialogCounter)
+        nextButton.draw(screen)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if nextButton.isOver(mouse.get_pos()):
+                        if dialogCounter >= 5:
+                            dialogActivated = False
+                            dialogCounter = 1
+                        else:
+                            dialogCounter += 1
+        pygame.display.flip()
+        clock.tick(60)
+        continue
 
 
     for event in events:

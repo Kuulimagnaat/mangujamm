@@ -1,7 +1,7 @@
 # mangujamm
 
 What we need to do:
-1.add scoring to the screen while playing ~ 20 min
+1.add scoring to the screen while playing ~ 20 min x
 2.add final score to win screen ~ 10 min
 3.add waves ~ 30 min
 4.add sounds ~ 1 hour
