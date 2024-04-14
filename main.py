@@ -148,6 +148,13 @@ def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
     text_rect = text_surface.get_rect(midtop=(f_ability_box_pos[0] + f_ability_box_size[0] // 2, f_ability_box_pos[1]))  # Position the text
     screen.blit(text_surface, text_rect)  # Blit the text onto the screen
 
+def draw_ingame_stats(screen, x, y):
+    pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (400, 100)))
+    angelsKilledText = stats_font.render(f"Angels killed: {mangija.angelKills}", False, (255, 255, 255))
+    murderedFriends = stats_font.render(f"Murdered friends: {mangija.zombieKills}", False, (255, 255, 255))
+    screen.blit(angelsKilledText, (x+25, y+25))
+    screen.blit(murderedFriends, (x+25, y+55))
+    
 
 def init():
     global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
@@ -326,6 +333,9 @@ while running:
     #Draws the stun cooldown bar
     draw_cooldown_bar(screen, stun_cooldown_timer, stun_cooldown_duration)
 
+    #On screen stats
+    draw_ingame_stats(screen, 0, 620)
+
     # Progress bar
     if summonProgress>=0 and not game_won:
         progressBarPos = (1050,30)
@@ -348,7 +358,7 @@ while running:
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Check if left mouse button is clicked
-                if backToMainMenuButton.isOver(event.pos) and game_won==True:
+                if backToMainMenuButton.isOver(event.pos) and (game_won or game_over):
                     mainMenu = True
                     game_over = False
                     game_won = False
