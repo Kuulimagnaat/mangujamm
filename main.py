@@ -3,6 +3,7 @@ import random
 from Mangija import Mangija
 from Funktsioonid import *
 from button import *
+from slider import Slider
 
 def clamp(n, min, max): 
     if n < min: 
@@ -15,6 +16,7 @@ def clamp(n, min, max):
 # pygame setup
 pygame.init()
 pygame.font.init()
+pygame.mixer.init()
 
 my_font = pygame.font.Font("./assets/demon_panic.otf", 30)
 
@@ -24,6 +26,7 @@ pygame.display.set_caption("DemonSUMMON")
 clock = pygame.time.Clock()
 mouse = pygame.mouse
 mixer = pygame.mixer_music
+mixer2 = pygame.mixer
 running = True
 game_over = False
 game_won = False
@@ -32,7 +35,7 @@ pentaGramPoints = [(660, 160), (420, 310), (900, 300), (492, 570), (800, 570)]
 
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
-mixer.load("./assets/loadAndChamber.mp3")
+
 
 #pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 backgroundImage = pygame.image.load("./assets/background.png").convert()
@@ -130,6 +133,31 @@ exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100,
 
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
+slider1 = Slider(100,280,200,50)
+slider2 = Slider(100,420,200,50)
+#Volume slider box
+volumeBox = pygame.rect.Rect((50,210), (300, 300))
+
+
+#Sound effects
+enterSound = mixer2.Sound("./assets/loadAndChamber.mp3")
+gunShotSound = mixer2.Sound("./assets/pistolShot.mp3")
+
+#Have to credit audionautix.com
+#Muusika
+music = ["./assets/Marauder.mp3",
+         "./assets/EnergyBed2.mp3",
+         "./assets/Pentagram.mp3"]
+musicQueue = music.copy()
+choice = random.choice(music)
+mixer.load(choice)
+musicQueue.remove(choice)
+for i in musicQueue:
+    mixer.queue(i)
+mixer.set_volume(slider1.get_volume()/100)
+mixer.play()
+enterSound.set_volume(slider2.get_volume()/100)
+gunShotSound.set_volume(slider2.get_volume()/100)
 
 #Dialog scene button
 nextButton = Button(1280-250, 720-150, 200, 100, "Next")
@@ -167,7 +195,7 @@ def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
     screen.blit(text_surface, text_rect)  # Blit the text onto the screen
 
 def draw_ingame_stats(screen, x, y):
-    pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (400, 100)))
+    pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (250, 100)))
     angelsKilledText = stats_font.render(f"Angels killed: {mangija.angelKills}", False, (255, 255, 255))
     murderedFriends = stats_font.render(f"Friends murdered: {mangija.zombieKills}", False, (255, 255, 255))
     screen.blit(angelsKilledText, (x+25, y+25))
@@ -177,7 +205,7 @@ def draw_ingame_stats(screen, x, y):
     
 
 def init():
-    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, mixer, game_over, vignette_alpha
+    global zombies, angels, mangija, timePassedFromAngel, timePassedFromSummon, timePassedFromZombie, game_over, vignette_alpha
     zombies = [spawnZombie(pentaGramPoints)]
     angels = []
     mangija = Mangija.Mangija(1280/2,720/2,5)
@@ -187,6 +215,7 @@ def init():
     vignette_alpha
 
 while running:
+    
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     events = pygame.event.get()
@@ -200,6 +229,21 @@ while running:
         screen.blit(forestImage, (0,0))
         pygame.draw.rect(screen, (125,125,125), pygame.Rect(((1280-menuWidth)/2, (720-menuHeight)/2), (menuWidth, menuHeight)))
         exitButton.draw(screen)
+        pygame.draw.rect(screen, (100,100,100), volumeBox)
+        slider1.draw(screen)
+        slider2.draw(screen)
+        screen.blit(my_font.render("MUSIC VOLUME", False, (255,255,255)), (100,250))
+        screen.blit(my_font.render("SFX VOLUME", False, (255,255,255)), (100,380))
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if slider1.on_slider_hold(event.pos[0], event.pos[1]):
+                        slider1.handle_event(screen, event.pos[0])
+                        mixer.set_volume(slider1.get_volume()/100)
+                    if slider2.on_slider_hold(event.pos[0], event.pos[1]):
+                        slider2.handle_event(screen, event.pos[0])
+                        gunShotSound.set_volume(slider2.get_volume()/100)
+                        enterSound.set_volume(slider2.get_volume()/100)
 
     if mainMenu:
         startButton.draw(screen)
@@ -207,7 +251,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if startButton.isOver(mouse.get_pos()):
-                        mixer.play()
+                        enterSound.play()
                         mainMenu = False
                         init()
                         dialogActivated = True
@@ -227,7 +271,6 @@ while running:
                     elif exitButton.isOver(mouse.get_pos()):
                         paused = False
                         mainMenu = True
-                        mixer.load("./assets/loadAndChamber.mp3")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 paused=False
         pygame.display.flip()
@@ -256,9 +299,9 @@ while running:
         if not game_over and not game_won:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mixer.load("./assets/pistolShot.mp3")
+                    gunShotSound.set_volume(slider2.get_volume()/100-random.random()/10)
+                    gunShotSound.play()
                     mangija.TekitaMuzzleFlash(5)
-                    mixer.play()
                     TegeleTulistamisega(mangija, zombies, angels)
                     mangija.SaaTagasilööki(5,1)
                 elif event.button == 2:
@@ -387,14 +430,14 @@ while running:
     # Progress bar
     if summonProgress>=0 and not game_won:
         progressBarPos = (1050,30)
-        progressBarWidth, progressBarHeight = 200, 80
+        progressBarWidth, progressBarHeight = 220, 80
         progressBarBackground = pygame.Rect(progressBarPos, (progressBarWidth, progressBarHeight))
         progressBarBackgroundColor = (100,100,100)
         progressBarProgress = pygame.Rect(progressBarPos, (progressBarWidth*summonProgress/100, progressBarHeight))
         progressBarProgressColor = (200,200,200)
         pygame.draw.rect(screen, progressBarBackgroundColor, progressBarBackground)
         pygame.draw.rect(screen, progressBarProgressColor, progressBarProgress)
-        text_surface = my_font.render(f'{summonProgress}%', False, (255, 0, 0))
+        text_surface = my_font.render(f'SUMMONING: {summonProgress}%', False, (255, 156, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
 
