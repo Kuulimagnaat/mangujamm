@@ -144,21 +144,23 @@ def dialogScene(scene, n):
         t2.Joonista()
     if n == 3:
         a = pygame.transform.flip(tegelaseImage, True, False)
-        screen.blit(a, (85, 320))
+        screen.blit(a, (65, 320))
         screen.blit(textboxImage, (55,500))
         t3.Joonista()
     if n == 4:
-        screen.blit(tegelaseImage, (85, 320))
+        a = pygame.transform.flip(tegelaseImage, True, False)
+        screen.blit(a, (85, 320))
         screen.blit(zombiImage, (600, 320))
         screen.blit(textboxImage, (55,500))
         t4.Joonista()
     if n == 5:
-        screen.blit(tegelaseImage, (85, 320))
+        a = pygame.transform.flip(tegelaseImage, True, False)
+        screen.blit(a, (95, 320))
         screen.blit(angelImage, (600, 320))
         screen.blit(textboxImage, (55,500))
         t5.Joonista()
     if n == 6:
-        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(tegelaseImage, (105, 320))
         screen.blit(textboxImage, (55,500))
         t6.Joonista()
     if n == 7:
