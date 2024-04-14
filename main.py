@@ -37,6 +37,8 @@ pentaGramPoints = [(660, 160), (420, 310), (900, 300), (492, 570), (800, 570)]
 zombies = [spawnZombie(pentaGramPoints)]
 angels = []
 
+zombieKillsCopy = False
+
 
 #pentagramImage = pygame.transform.scale_by(pygame.image.load("./assets/pentagram.webp"), 0.5)
 backgroundImage = pygame.image.load("./assets/background.png").convert()
@@ -72,7 +74,7 @@ game_over_quotes = [
     "In the depths of despair, find solace in the void."
 ]
 
-backToMainMenuButton = Button((1280-300)/2, 400, 300, 100, "Back to Main Menu", bgcolor=(15,15,15), textcolor=(255,255,255))
+backToMainMenuButton = Button((1280-300)/2, 400, 300, 100, "Peamenüüsse", bgcolor=(15,15,15), textcolor=(255,255,255))
 
 # Function to draw Game Over text on the screen
 def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
@@ -84,7 +86,7 @@ def draw_game_over_text(screen, chosen_quote, mangija, currentZomb):
     screen.blit(shadow_text, shadow_rect)
     screen.blit(game_over_text, text_rect)
 
-    stats_text = f"Friends Killed: {currentZomb} | Angels Killed: {mangija.angelKills} | Damage Done: {mangija.damageDone}"
+    stats_text = f"Sõpru alt veetud: {currentZomb} | Ingleid tapetud: {mangija.angelKills} | Kahju tehtud: {mangija.damageDone}"
     shadow_text = stats_font.render(stats_text, True, (0,0,0))
     stats_rendered = stats_font.render(stats_text, True, (255, 0, 0))
 
@@ -123,7 +125,7 @@ t4.MääraLaius(700)
 
 tekst5 = "Jumala teenrid üritavad mind takistada. Mu püstol aitab nendega tegeleda.\nF-nupp, mu kaitseloits, ajab nad segadusse."
 t5 = Tekst.MitmeReaTekst(screen, tekst5, pygfont)
-t5.MääraAsukoht((130,600))
+t5.MääraAsukoht((130,595))
 t5.MääraLaius(675)
 
 tekst6 = "Rituaali töötamiseks peavad poolsurnud pentagrammi otstes elus püsima."
@@ -147,21 +149,23 @@ def dialogScene(scene, n):
         t2.Joonista()
     if n == 3:
         a = pygame.transform.flip(tegelaseImage, True, False)
-        screen.blit(a, (85, 320))
+        screen.blit(a, (65, 320))
         screen.blit(textboxImage, (55,500))
         t3.Joonista()
     if n == 4:
-        screen.blit(tegelaseImage, (85, 320))
+        a = pygame.transform.flip(tegelaseImage, True, False)
+        screen.blit(a, (85, 320))
         screen.blit(zombiImage, (600, 320))
         screen.blit(textboxImage, (55,500))
         t4.Joonista()
     if n == 5:
-        screen.blit(tegelaseImage, (85, 320))
+        a = pygame.transform.flip(tegelaseImage, True, False)
+        screen.blit(a, (95, 320))
         screen.blit(angelImage, (600, 320))
         screen.blit(textboxImage, (55,500))
         t5.Joonista()
     if n == 6:
-        screen.blit(tegelaseImage, (85, 320))
+        screen.blit(tegelaseImage, (105, 320))
         screen.blit(textboxImage, (55,500))
         t6.Joonista()
     if n == 7:
@@ -199,8 +203,8 @@ dialogCounter = 1
 menuWidth, menuHeight = 400, 350
 
 # Pause menu
-continueButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Continue")
-exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100, "Exit")
+continueButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Jätka")
+exitButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50+150, 200, 100, "Välju")
 
 #Main menu
 startButton = Button((1280-menuWidth)/2+100, (720-menuHeight)/2+50, 200, 100, "Start")
@@ -230,7 +234,7 @@ enterSound.set_volume(slider2.get_volume()/100)
 gunShotSound.set_volume(slider2.get_volume()/100)
 
 #Dialog scene button
-nextButton = Button(1280-250, 720-150, 200, 100, "Next")
+nextButton = Button(1280-250, 720-150, 200, 100, "EDASI")
 
 # Add these variables to your code
 blood_pool_radius = 0
@@ -260,14 +264,14 @@ def draw_cooldown_bar(screen, current_cooldown, max_cooldown):
     pygame.draw.rect(screen, f_ability_cooldown_color, remaining_rect)  # Draw the remaining portion
     
     # Draw text above the cooldown bar
-    text_surface = stats_font.render("Stun (F)", True, (0, 0, 0))  # Create text surface
+    text_surface = stats_font.render("Juhmista (F)", True, (0, 0, 0))  # Create text surface
     text_rect = text_surface.get_rect(midtop=(f_ability_box_pos[0] + f_ability_box_size[0] // 2, f_ability_box_pos[1]))  # Position the text
     screen.blit(text_surface, text_rect)  # Blit the text onto the screen
 
 def draw_ingame_stats(screen, x, y):
     pygame.draw.rect(screen, ((125,125,125)), pygame.rect.Rect((x,y), (250, 100)))
-    angelsKilledText = stats_font.render(f"Angels killed: {mangija.angelKills}", False, (255, 255, 255))
-    murderedFriends = stats_font.render(f"Friends murdered: {mangija.zombieKills}", False, (255, 255, 255))
+    angelsKilledText = stats_font.render(f"Ingleid tapetud: {mangija.angelKills}", False, (255, 255, 255))
+    murderedFriends = stats_font.render(f"Sõpru alt veetud: {mangija.zombieKills}", False, (255, 255, 255))
     screen.blit(angelsKilledText, (x+25, y+25))
     screen.blit(murderedFriends, (x+25, y+55))
 
@@ -306,8 +310,8 @@ while running:
         pygame.draw.rect(screen, (100,100,100), volumeBox)
         slider1.draw(screen)
         slider2.draw(screen)
-        screen.blit(my_font.render("MUSIC VOLUME", False, (255,255,255)), (100,250))
-        screen.blit(my_font.render("SFX VOLUME", False, (255,255,255)), (100,380))
+        screen.blit(my_font.render("MUUSIKA VALJUS", False, (255,255,255)), (100,250))
+        screen.blit(my_font.render("LASKUDE TUGEVUS", False, (255,255,255)), (80,380))
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -378,14 +382,6 @@ while running:
                     mangija.TekitaMuzzleFlash(5)
                     TegeleTulistamisega(mangija, zombies, angels)
                     mangija.SaaTagasilööki(5,1)
-                elif event.button == 2:
-                    print("angels on screen: ", len(angels))
-                    print("angels killed: ", mangija.angelKills)
-                    print("zombies on screen: ", len(zombies))
-                    print("zombies killed: ", mangija.zombieKills)
-                    print("Damage done to angels: ", mangija.damageDone)
-                    print(dialogCounter)
-                #print("Tulistati!")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 paused=True
         # Check if the timer event is triggered
@@ -503,15 +499,15 @@ while running:
 
     # Progress bar
     if summonProgress>=0 and not game_won:
-        progressBarPos = (1050,30)
-        progressBarWidth, progressBarHeight = 220, 80
+        progressBarPos = (1010,30)
+        progressBarWidth, progressBarHeight = 240, 80
         progressBarBackground = pygame.Rect(progressBarPos, (progressBarWidth, progressBarHeight))
         progressBarBackgroundColor = (100,100,100)
         progressBarProgress = pygame.Rect(progressBarPos, (progressBarWidth*summonProgress/100, progressBarHeight))
         progressBarProgressColor = (200,200,200)
         pygame.draw.rect(screen, progressBarBackgroundColor, progressBarBackground)
         pygame.draw.rect(screen, progressBarProgressColor, progressBarProgress)
-        text_surface = my_font.render(f'SUMMONING: {summonProgress}%', False, (255, 156, 0))
+        text_surface = my_font.render(f'KURADI TULEK: {summonProgress}%', False, (255, 156, 0))
         screen.blit(text_surface, (progressBarPos[0]+(progressBarWidth-text_surface.get_width())/2, progressBarPos[1]+(progressBarHeight)/4))
 
 
@@ -558,6 +554,15 @@ while running:
         # Display victory screen
         screen.fill((0, 0, 0))  # Fill the screen with black
         victory_text = game_over_font.render("Saatan on saabunud", True, (255, 255, 255))  # Render victory text
+
+        if zombieKillsCopy == False:
+            zombieKillsNumber = mangija.zombieKills
+            zombieKillsCopy = True
+        stats_text = f"Sõpru alt veetud: {zombieKillsNumber} | Ingleid tapetud: {mangija.angelKills} | Kahju tehtud: {mangija.damageDone}"
+        shadow_text = stats_font.render(stats_text, True, (0,0,0))
+        stats_rendered = stats_font.render(stats_text, True, (255, 255, 255))
+        screen.blit(stats_rendered, (10,10))
+        
         text_rect = victory_text.get_rect(center=(640, 360))  # Center the text on the screen
         screen.blit(victory_text, text_rect)  # Blit the victory text onto the screen
 
