@@ -343,7 +343,7 @@ while running:
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Check if left mouse button is clicked
-                if backToMainMenuButton.isOver(event.pos):
+                if backToMainMenuButton.isOver(event.pos) and game_won==True:
                     mainMenu = True
                     game_over = False
                     game_won = False
