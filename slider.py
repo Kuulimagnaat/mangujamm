@@ -46,4 +46,3 @@ class Slider:
             self.circle_x = x
         self.draw(screen)
         self.update_volume(x)
-        print(self.volume)
